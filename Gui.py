@@ -57,11 +57,11 @@ class Example(Frame):
         # time_loop(False)
         def randsettings():
             ltext.delete("1.0", END)
-            ltext.insert("1.0", random.randint(5000, 10000) * 0.01)
+            ltext.insert("1.0", random.randint(50, 100))
             wtext.delete("1.0", END)
-            wtext.insert("1.0", random.randint(5000, 10000) * 0.01)
+            wtext.insert("1.0", random.randint(50, 100))
             htext.delete("1.0", END)
-            htext.insert("1.0", random.randint(5000, 10000) * 0.01)
+            htext.insert("1.0", random.randint(20, 60))
             randdraft = "Downdraft", "Updraft"
             stylecbox.set(randdraft[random.randint(0, 1)])
             create()
@@ -80,7 +80,6 @@ class Example(Frame):
 
             try:
                 lt = float(ltext.get("1.0", 'end-1c'))
-
             except ValueError:
                 print("Length must be a number! ")
                 isfloat = False
