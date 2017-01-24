@@ -125,6 +125,7 @@ class Example(Frame):
 
                 # Print shapes to canvas
                 canvas.create_polygon(frontshape, fill="#ccc", outline="black", width=2)
+                print(frontshape)
                 canvas.create_polygon(sideshape, fill="#ccc", outline="black", width=2)
                 canvas.create_polygon(topshape[0:4], fill="#ccc", outline="black", width=2)
                 canvas.create_polygon(topshape[4:8], fill="#ccc", outline="black", width=2)
@@ -133,6 +134,7 @@ class Example(Frame):
                 canvas.create_line(topshape[2], topshape[6], width=2)
                 canvas.create_line(topshape[3], topshape[7], width=2)
                 canvas.create_oval(holeshape, width=2, fill="#fff")
+
 
                 # print measurements to canvas
                 for n in range(0, 4):
