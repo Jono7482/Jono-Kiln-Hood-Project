@@ -192,6 +192,14 @@ class Example(Frame):
                     canvaswidth, canvasheight, isoscale, tf, "iso", offset, lengthdif)
                 canvas.create_polygon(tfshape, fill="#ccc", outline="black", width=2)
 
+                # holef = Iso_View.iso_points(wt, lt, ht, 4, 16, draft, "holef")
+                # print("hole before rotate", holef)
+                # hole = Iso_View.rotate_face(holef)
+                # print("hole before locate", hole)
+                # holeshape = GetSize.locate_points_canvas(
+                #     canvaswidth, canvasheight, isoscale, hole, "iso", offset, lengthdif)
+                # canvas.create_oval(holeshape, fill="#fff", outline="black", width=2)
+
 
                 # print measurements to canvas
                 for n in range(0, 4):

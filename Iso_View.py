@@ -73,7 +73,17 @@ def iso_points(width, length, height, skirt, top, draft, face):
     elif face == "bf":
         return bf
     elif face == "tpts":
+        print("tpts", tpts)
         return tpts
+    elif face == "holef":
+        hole = 12
+        holeoffset = 0 #(top - hole) / 2
+        h1 = [tpts[0][0] + holeoffset,tpts[3][1], tpts[0][2] - holeoffset]
+        h2 = [tpts[2][0] - holeoffset,tpts[1][1], tpts[2][2] - holeoffset]
+        holef = h2, h1
+        print("holef", holef)
+        return holef
+
     else:
         print("Error face must match a variable name")
 
@@ -123,14 +133,15 @@ class Point3D:
 def rotate_face(points):
     angleX, angleY, angleZ = -22, 22, 0.00001
     face = []
-
-    for n in range(0, 4):
+    for n in range(len(points)):
         i = Point3D(*points[n])
         r = i.rotateX(angleX).rotateY(angleY).rotateZ(angleZ)
         # p = r.project(self.screen.get_width(), self.screen.get_height(), 256, 4)
-        face.append(r.x)
-        face.append(r.y)
+        face.append(r.x), face.append(r.y)
     faceout = face[0:2], face[2:4], face[4:6], face[6:8]
+    print(len(points))
+    faceout = faceout[0:len(points)]
+    print("faceout", faceout)
     return faceout
 
 
