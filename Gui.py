@@ -4,6 +4,7 @@ from tkinter.ttk import Combobox
 
 import GetSize
 import Mesurements
+import Iso_View
 
 
 class Example(Frame):
@@ -125,7 +126,6 @@ class Example(Frame):
 
                 # Print shapes to canvas
                 canvas.create_polygon(frontshape, fill="#ccc", outline="black", width=2)
-                print(frontshape)
                 canvas.create_polygon(sideshape, fill="#ccc", outline="black", width=2)
                 canvas.create_polygon(topshape[0:4], fill="#ccc", outline="black", width=2)
                 canvas.create_polygon(topshape[4:8], fill="#ccc", outline="black", width=2)
@@ -134,6 +134,63 @@ class Example(Frame):
                 canvas.create_line(topshape[2], topshape[6], width=2)
                 canvas.create_line(topshape[3], topshape[7], width=2)
                 canvas.create_oval(holeshape, width=2, fill="#fff")
+
+                # Testing iso view
+                isoscale = scale * .85 # temporary fix for oversized iso view
+
+                bskf = Iso_View.iso_points(wt, lt, ht, 4, 16, draft, "bskf")
+                bsk = Iso_View.rotate_face(bskf)
+                ffshape = GetSize.locate_points_canvas(
+                    canvaswidth, canvasheight, isoscale, bsk, "iso", offset, lengthdif)
+                canvas.create_polygon(ffshape, fill="#ccc", outline="black", width=2)
+
+                bf = Iso_View.iso_points(wt, lt, ht, 4, 16, draft, "bf")
+                b = Iso_View.rotate_face(bf)
+                ffshape = GetSize.locate_points_canvas(
+                    canvaswidth, canvasheight, isoscale, b, "iso", offset, lengthdif)
+                canvas.create_polygon(ffshape, fill="#ccc", outline="black", width=2)
+
+                lskf = Iso_View.iso_points(wt, lt, ht, 4, 16, draft, "lskf")
+                lsk = Iso_View.rotate_face(lskf)
+                ffshape = GetSize.locate_points_canvas(
+                    canvaswidth, canvasheight, isoscale, lsk, "iso", offset, lengthdif)
+                canvas.create_polygon(ffshape, fill="#ccc", outline="black", width=2)
+
+                lf = Iso_View.iso_points(wt, lt, ht, 4, 16, draft, "lf")
+                l = Iso_View.rotate_face(lf)
+                ffshape = GetSize.locate_points_canvas(
+                    canvaswidth, canvasheight, isoscale, l, "iso", offset, lengthdif)
+                canvas.create_polygon(ffshape, fill="#ccc", outline="black", width=2)
+
+                rskf = Iso_View.iso_points(wt, lt, ht, 4, 16, draft, "rskf")
+                rsk = Iso_View.rotate_face(rskf)
+                ffshape = GetSize.locate_points_canvas(
+                    canvaswidth, canvasheight, isoscale, rsk, "iso", offset, lengthdif)
+                canvas.create_polygon(ffshape, fill="#ccc", outline="black", width=2)
+
+                rf = Iso_View.iso_points(wt, lt, ht, 4, 16, draft, "rf")
+                r = Iso_View.rotate_face(rf)
+                ffshape = GetSize.locate_points_canvas(
+                    canvaswidth, canvasheight, isoscale, r, "iso", offset, lengthdif)
+                canvas.create_polygon(ffshape, fill="#ccc", outline="black", width=2)
+
+                fskf = Iso_View.iso_points(wt, lt, ht, 4, 16, draft, "fskf")
+                fsk = Iso_View.rotate_face(fskf)
+                ffshape = GetSize.locate_points_canvas(
+                    canvaswidth, canvasheight, isoscale, fsk, "iso", offset, lengthdif)
+                canvas.create_polygon(ffshape, fill="#ccc", outline="black", width=2)
+
+                ff = Iso_View.iso_points(wt, lt, ht, 4, 16, draft, "ff")
+                ff = Iso_View.rotate_face(ff)
+                ffshape = GetSize.locate_points_canvas(
+                    canvaswidth, canvasheight, isoscale, ff, "iso", offset, lengthdif)
+                canvas.create_polygon(ffshape, fill="#ccc", outline="black", width=2)
+
+                tpts = Iso_View.iso_points(wt, lt, ht, 4, 16, draft, "tpts")
+                tf = Iso_View.rotate_face(tpts)
+                tfshape = GetSize.locate_points_canvas(
+                    canvaswidth, canvasheight, isoscale, tf, "iso", offset, lengthdif)
+                canvas.create_polygon(tfshape, fill="#ccc", outline="black", width=2)
 
 
                 # print measurements to canvas

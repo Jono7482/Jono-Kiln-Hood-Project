@@ -122,6 +122,7 @@ def find_scale(canvasx, canvasy, tpoints, height, offset):
 
 
 def locate_points_canvas(canvasx, canvasy, scale, points, face, offset, lengthdif):
+
     # Scale points
     lengthdifx = lengthdif[0] * (scale / 2)
     lengthdify = lengthdif[1] * (scale / 2)
@@ -134,15 +135,22 @@ def locate_points_canvas(canvasx, canvasy, scale, points, face, offset, lengthdi
         points[index][1] = canvasy - points[index][1]
 
     # Front return points Side Move to bottom right then return points
+
     if face is "front":
         return points
     elif face is "side":
         for x in range(len(points)):
             points[x][0] += (canvasx / 2) + lengthdifx
         return points
-    elif face is "top" or "hole":
+    elif face is "top" or face is "hole":
         for x in range(len(points)):
+            points[x][1] -= (canvasy / 2) - lengthdify
+        return points
+    elif face == "iso":
+        for x in range(len(points)):
+            points[x][0] += (canvasx / 2) + lengthdifx
             points[x][1] -= (canvasy / 2) - lengthdify
         return points
     else:
         print("locate_points_canvas face != front or side")
+        return
