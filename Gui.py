@@ -5,6 +5,7 @@ from tkinter.ttk import Combobox
 import GetSize
 import Mesurements
 import Iso_View
+lt, wt, ht = 0, 0, 0
 
 
 class Example(Frame):
@@ -19,7 +20,7 @@ class Example(Frame):
 
     def centerwindow(self):
 
-        # Setting up Window
+    # Setting up Window
         w = 800
         h = 600
         sw = self.parent.winfo_screenwidth()
@@ -55,7 +56,7 @@ class Example(Frame):
             htext.insert("1.0", "24")
             stylecbox.set("Downdraft")
 
-        # time_loop(False)
+    # Make random size hoods
         def randsettings():
             ltext.delete("1.0", END)
             ltext.insert("1.0", random.randint(50, 100))
@@ -67,18 +68,15 @@ class Example(Frame):
             stylecbox.set(randdraft[random.randint(0, 1)])
             create()
 
-    # Create floats run getsize
-        def create():
-            canvasheight = canvas.winfo_height()
-            canvaswidth = canvas.winfo_width()
 
-            canvas.delete("all")
+    # Create floats from inputs
+        def get_user_inputs():
             isfloat = bool(1)
-            lt = float
-            wt = float
-            ht = float
-            draft = stylecbox.get()
-
+            global lt, wt, ht
+            global top
+            global skirt
+            top = 16
+            skirt = 4
             try:
                 lt = float(ltext.get("1.0", 'end-1c'))
             except ValueError:
@@ -94,128 +92,84 @@ class Example(Frame):
             except ValueError:
                 print("Height must be a number!")
                 isfloat = False
+            return lt, wt, ht, isfloat
 
-            if isfloat:
-                # Get points
-                fpoints = GetSize.create_points(wt, ht, draft, "Front")
-                spoints = GetSize.create_points(lt, ht, draft, "Side")
-                tpoints = GetSize.create_points(wt, lt, draft, "Top")
-                hpoints = GetSize.create_points(wt, lt, draft, "Hole")
+    # Get points
+        def get_points(lt, wt, ht, draft):
+            fpoints = GetSize.create_points(wt, ht, draft, "Front")
+            spoints = GetSize.create_points(lt, ht, draft, "Side")
+            tpoints = GetSize.create_points(wt, lt, draft, "Top")
+            hpoints = GetSize.create_points(wt, lt, draft, "Hole")
+            return fpoints, spoints, tpoints, hpoints
 
-                # Scale points to canvas
-                offset = 15
 
-                scale, lengthdif = GetSize.find_scale(canvaswidth, canvasheight, tpoints, ht, offset)
+    # Display objects on canvas
+        def create():
+            canvasheight = canvas.winfo_height()
+            canvaswidth = canvas.winfo_width()
+            canvas.delete("all")
+            global draft
+            draft = stylecbox.get()
+            lt, wt, ht, isfloat = get_user_inputs()
+            if not isfloat:
+                return
+            fpoints, spoints, tpoints, hpoints = get_points(lt, wt, ht, draft)
 
-                frontshape = GetSize.locate_points_canvas(
-                    canvaswidth, canvasheight, scale, fpoints, "front", offset, lengthdif)
-                sideshape = GetSize.locate_points_canvas(
-                    canvaswidth, canvasheight, scale, spoints, "side", offset, lengthdif)
-                topshape = GetSize.locate_points_canvas(
-                    canvaswidth, canvasheight, scale, tpoints, "top", offset, lengthdif)
-                holeshape = GetSize.locate_points_canvas(
-                    canvaswidth, canvasheight, scale, hpoints, "hole", offset, lengthdif)
+            # Scale points to canvas
+            offset = 15
+            scale, lengthdif = GetSize.find_scale(canvaswidth, canvasheight, tpoints, ht, offset)
 
-                # get measurement locations
-                frontcords = Mesurements.get_measurement_cords(frontshape)
-                sidecords = Mesurements.get_measurement_cords(sideshape)
+            frontshape = GetSize.locate_points_canvas(
+                canvaswidth, canvasheight, scale, fpoints, "front", offset, lengthdif)
+            sideshape = GetSize.locate_points_canvas(
+                canvaswidth, canvasheight, scale, spoints, "side", offset, lengthdif)
+            topshape = GetSize.locate_points_canvas(
+                canvaswidth, canvasheight, scale, tpoints, "top", offset, lengthdif)
+            holeshape = GetSize.locate_points_canvas(
+                canvaswidth, canvasheight, scale, hpoints, "hole", offset, lengthdif)
 
-                # Get size arrays
-                frontsizearray = Mesurements.size_array(wt, ht)
-                sidesizearray = Mesurements.size_array(lt, ht)
+            # Print front/side/top views to canvas
+            canvas.create_polygon(frontshape, fill="#ccc", outline="black", width=2)
+            canvas.create_polygon(sideshape, fill="#ccc", outline="black", width=2)
+            canvas.create_polygon(topshape[0:4], fill="#ccc", outline="black", width=2)
+            canvas.create_polygon(topshape[4:8], fill="#ccc", outline="black", width=2)
+            canvas.create_line(topshape[0], topshape[4], width=2)
+            canvas.create_line(topshape[1], topshape[5], width=2)
+            canvas.create_line(topshape[2], topshape[6], width=2)
+            canvas.create_line(topshape[3], topshape[7], width=2)
+            canvas.create_oval(holeshape, width=2, fill="#fff")
 
-                # Print shapes to canvas
-                canvas.create_polygon(frontshape, fill="#ccc", outline="black", width=2)
-                canvas.create_polygon(sideshape, fill="#ccc", outline="black", width=2)
-                canvas.create_polygon(topshape[0:4], fill="#ccc", outline="black", width=2)
-                canvas.create_polygon(topshape[4:8], fill="#ccc", outline="black", width=2)
-                canvas.create_line(topshape[0], topshape[4], width=2)
-                canvas.create_line(topshape[1], topshape[5], width=2)
-                canvas.create_line(topshape[2], topshape[6], width=2)
-                canvas.create_line(topshape[3], topshape[7], width=2)
-                canvas.create_oval(holeshape, width=2, fill="#fff")
-
-                # Testing iso view
-                isoscale = scale * .85 # temporary fix for oversized iso view
-
-                bskf = Iso_View.iso_points(wt, lt, ht, 4, 16, draft, "bskf")
-                bsk = Iso_View.rotate_face(bskf)
-                ffshape = GetSize.locate_points_canvas(
-                    canvaswidth, canvasheight, isoscale, bsk, "iso", offset, lengthdif)
-                canvas.create_polygon(ffshape, fill="#ccc", outline="black", width=2)
-
-                bf = Iso_View.iso_points(wt, lt, ht, 4, 16, draft, "bf")
-                b = Iso_View.rotate_face(bf)
-                ffshape = GetSize.locate_points_canvas(
-                    canvaswidth, canvasheight, isoscale, b, "iso", offset, lengthdif)
-                canvas.create_polygon(ffshape, fill="#ccc", outline="black", width=2)
-
-                lskf = Iso_View.iso_points(wt, lt, ht, 4, 16, draft, "lskf")
-                lsk = Iso_View.rotate_face(lskf)
-                ffshape = GetSize.locate_points_canvas(
-                    canvaswidth, canvasheight, isoscale, lsk, "iso", offset, lengthdif)
-                canvas.create_polygon(ffshape, fill="#ccc", outline="black", width=2)
-
-                lf = Iso_View.iso_points(wt, lt, ht, 4, 16, draft, "lf")
-                l = Iso_View.rotate_face(lf)
-                ffshape = GetSize.locate_points_canvas(
-                    canvaswidth, canvasheight, isoscale, l, "iso", offset, lengthdif)
-                canvas.create_polygon(ffshape, fill="#ccc", outline="black", width=2)
-
-                rskf = Iso_View.iso_points(wt, lt, ht, 4, 16, draft, "rskf")
-                rsk = Iso_View.rotate_face(rskf)
-                ffshape = GetSize.locate_points_canvas(
-                    canvaswidth, canvasheight, isoscale, rsk, "iso", offset, lengthdif)
-                canvas.create_polygon(ffshape, fill="#ccc", outline="black", width=2)
-
-                rf = Iso_View.iso_points(wt, lt, ht, 4, 16, draft, "rf")
-                r = Iso_View.rotate_face(rf)
-                ffshape = GetSize.locate_points_canvas(
+            # Iso View
+            isoscale = scale * .85  # temporary fix for oversized iso view
+            isopoints = Iso_View.iso_points()
+            for n in range(len(isopoints)):
+                r = Iso_View.rotate_face(isopoints[n])
+                shape = GetSize.locate_points_canvas(
                     canvaswidth, canvasheight, isoscale, r, "iso", offset, lengthdif)
-                canvas.create_polygon(ffshape, fill="#ccc", outline="black", width=2)
+                canvas.create_polygon(shape, fill="#ccc", outline="black", width=2)
 
-                fskf = Iso_View.iso_points(wt, lt, ht, 4, 16, draft, "fskf")
-                fsk = Iso_View.rotate_face(fskf)
-                ffshape = GetSize.locate_points_canvas(
-                    canvaswidth, canvasheight, isoscale, fsk, "iso", offset, lengthdif)
-                canvas.create_polygon(ffshape, fill="#ccc", outline="black", width=2)
+            # get measurement locations
+            frontcords = Mesurements.get_measurement_cords(frontshape)
+            sidecords = Mesurements.get_measurement_cords(sideshape)
+            # Get size arrays
+            frontsizearray = Mesurements.size_array(wt, ht)
+            sidesizearray = Mesurements.size_array(lt, ht)
 
-                ff = Iso_View.iso_points(wt, lt, ht, 4, 16, draft, "ff")
-                ff = Iso_View.rotate_face(ff)
-                ffshape = GetSize.locate_points_canvas(
-                    canvaswidth, canvasheight, isoscale, ff, "iso", offset, lengthdif)
-                canvas.create_polygon(ffshape, fill="#ccc", outline="black", width=2)
+            # print measurements to canvas
+            for n in range(0, 4):
+                canvas_id = canvas.create_text(frontcords[n])
+                canvas.itemconfig(canvas_id, text=frontsizearray[n])
+            for n in range(0, 4):
+                canvas_id = canvas.create_text(sidecords[n])
+                canvas.itemconfig(canvas_id, text=sidesizearray[n])
+            return
 
-                tpts = Iso_View.iso_points(wt, lt, ht, 4, 16, draft, "tpts")
-                tf = Iso_View.rotate_face(tpts)
-                tfshape = GetSize.locate_points_canvas(
-                    canvaswidth, canvasheight, isoscale, tf, "iso", offset, lengthdif)
-                canvas.create_polygon(tfshape, fill="#ccc", outline="black", width=2)
-
-                # holef = Iso_View.iso_points(wt, lt, ht, 4, 16, draft, "holef")
-                # print("hole before rotate", holef)
-                # hole = Iso_View.rotate_face(holef)
-                # print("hole before locate", hole)
-                # holeshape = GetSize.locate_points_canvas(
-                #     canvaswidth, canvasheight, isoscale, hole, "iso", offset, lengthdif)
-                # canvas.create_oval(holeshape, fill="#fff", outline="black", width=2)
-
-
-                # print measurements to canvas
-                for n in range(0, 4):
-                    canvas_id = canvas.create_text(frontcords[n])
-                    canvas.itemconfig(canvas_id, text=frontsizearray[n])
-                for n in range(0, 4):
-                    canvas_id = canvas.create_text(sidecords[n])
-                    canvas.itemconfig(canvas_id, text=sidesizearray[n])
-                return
-
-            else:
-                return
 
     # Frame objects
         lbl = Label(self, text="Kiln Hoods Calculator", width=20)
         lbl.grid(row=0, column=1, columnspan=2)
+        cbtn = Button(self, text="Create", width=10, command=create)
+        cbtn.grid(row=10, column=0, sticky=N)
         dbtn = Button(self, text="Defaults", width=10, command=setdef)
         dbtn.grid(row=11, column=3, sticky=E)
         hbtn = Button(self, text="Random", width=10, command=randsettings)
@@ -225,28 +179,21 @@ class Example(Frame):
 
         llbl = Label(self, text="Length:", width=10, background="#aaa")
         llbl.grid(row=1, column=0, sticky=W+S)
-
         ltext = Text(self, width=10, height=1)
         ltext.insert(END, "Length")
         ltext.grid(row=2, column=0)
-
         wbl = Label(self, text="Width:", width=10, background="#aaa")
         wbl.grid(row=3, column=0, sticky=W+S)
-
         wtext = Text(self, width=10, height=1)
         wtext.insert(END, "Width")
         wtext.grid(row=4, column=0)
-
         hlbl = Label(self, text="Height:", width=10, background="#aaa")
         hlbl.grid(row=5, column=0, sticky=W+S)
-
         htext = Text(self, width=10, height=1)
         htext.insert(END, "Height")
         htext.grid(row=6, column=0)
-
         stylelbl = Label(self, text="Draft Type:", width=10, background="#aaa")
         stylelbl.grid(row=7, column=0, sticky=W + S)
-
         stylecboxvar = 0
         stylecbox = Combobox(self, width=10, textvariable=stylecboxvar, state="readonly")
         stylecbox['values'] = ('Updraft', 'Downdraft')
@@ -255,9 +202,10 @@ class Example(Frame):
         fakelbl = Label(self, text="    ", width=10, background="#aaa")
         fakelbl.grid(row=9, column=0, sticky=W + S)
 
-        cbtn = Button(self, text="Create", width=10, command=create)
-        cbtn.grid(row=10, column=0, sticky=N)
-
+def size_list():
+    global lt, wt, ht, top, skirt, draft
+    sizelist = lt, wt, ht, top, skirt, draft
+    return sizelist
 
 def main():
 

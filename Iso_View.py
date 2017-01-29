@@ -1,6 +1,6 @@
-# 7 visible sides + hole and back and left skirt
-# all have 4 points except hole 2 points
 import math
+import Gui
+
 
 # width = 52
 # length = 60.5
@@ -9,26 +9,9 @@ import math
 # top = 16
 # draft = "Downdraft"
 
-
-# # Create faces in 3D
-# front_skirt = [0, 0, 0], [0, skirt, 0], [width, skirt, 0], [width, 0, 0]
-# right_skirt = [width, 0, 0], [width, skirt, 0], [width, skirt, length], [width, 0, length]
-# left_skirt = [0, 0, length], [0, skirt, length], [0, skirt, 0], [0, 0, 0]
-# front = [0, skirt, 0], [(width-top)/2, height, (length-top)/2], [((width-top)/2)+top,
-#             height, (length-top)/2], [width, skirt, 0]
-# right = [width, skirt, 0], [((width-top)/2)+top, height, (length-top)/2],\
-#             [((width-top)/2)+top, height, ((length-top)/2)+top], [width, skirt, length]
-# left = [0, skirt, length], [(width-top)/2, height, ((length-top)/2)+top], [(width-top)/2,
-#             height, (length-top)/2], [0, skirt, 0]
-# back = [width, skirt, length], [((width-top)/2)+top, height, ((length-top)/2)+top],\
-#             [(width-top)/2, height, ((length-top)/2)+top], [0, skirt, length]
-# topf = [(width-top)/2, height, (length-top)/2], [(width-top)/2, height, ((length-top)/2)+top],\
-#             [((width-top)/2)+top, height, ((length-top)/2)+top], [((width-top)/2)+top, height,
-#             (length-top)/2]
-
-
     # All face point variables
-def iso_points(width, length, height, skirt, top, draft, face):
+def iso_points():
+    width, length, height, top, skirt, draft = Gui.size_list()
     bpts = [0, 0, 0], [0, 0, length], [width, 0, length], [width, 0, 0]
     skpts = [0, skirt, 0], [0, skirt, length], [width, skirt, length], [width, skirt, 0]
     tptsud = [(width - top) / 2, height, (length - top) / 2], \
@@ -56,38 +39,40 @@ def iso_points(width, length, height, skirt, top, draft, face):
     lf = skpts[1], tpts[1], tpts[0], skpts[0]
     bf = skpts[2], tpts[2], tpts[1], skpts[1]
 
-    if face == "fskf":
-        return fskf
-    elif face == "rskf":
-        return rskf
-    elif face == "lskf":
-        return lskf
-    elif face == "bskf":
-        return bskf
-    elif face == "ff":
-        return ff
-    elif face == "rf":
-        return rf
-    elif face == "lf":
-        return lf
-    elif face == "bf":
-        return bf
-    elif face == "tpts":
-        print("tpts", tpts)
-        return tpts
-    elif face == "holef":
-        hole = 12
-        holeoffset = 0 #(top - hole) / 2
-        h1 = [tpts[0][0] + holeoffset,tpts[3][1], tpts[0][2] - holeoffset]
-        h2 = [tpts[2][0] - holeoffset,tpts[1][1], tpts[2][2] - holeoffset]
-        holef = h2, h1
-        print("holef", holef)
-        return holef
+    isopoints = bskf, lskf, bf, lf, rskf, rf, fskf, ff, tpts
+    return isopoints
 
-    else:
-        print("Error face must match a variable name")
+    # if face == "fskf":
+    #     return fskf
+    # elif face == "rskf":
+    #     return rskf
+    # elif face == "lskf":
+    #     return lskf
+    # elif face == "bskf":
+    #     return bskf
+    # elif face == "ff":
+    #     return ff
+    # elif face == "rf":
+    #     return rf
+    # elif face == "lf":
+    #     return lf
+    # elif face == "bf":
+    #     return bf
+    # elif face == "tpts":
+    #     return tpts
 
 
+    # elif face == "holef":
+    #     hole = 12
+    #     holeoffset = 0 #(top - hole) / 2
+    #     h1 = [tpts[0][0] + holeoffset,tpts[3][1], tpts[0][2] - holeoffset]
+    #     h2 = [tpts[2][0] - holeoffset,tpts[1][1], tpts[2][2] - holeoffset]
+    #     holef = h2, h1
+    #     print("holef", holef)
+    #     return holef
+
+    # else:
+    #     print("Error face must match a variable name")
 
 
 # code from http://codentronix.com/2011/04/20/simulation-of-3d-point-rotation-with-python-and-pygame/
@@ -122,12 +107,12 @@ class Point3D:
         y = self.x * sina + self.y * cosa
         return Point3D(x, y, self.z)
 
-    def project(self, win_width, win_height, fov, viewer_distance):
-        """ Transforms this 3D point to 2D using a perspective projection. """
-        factor = fov / (viewer_distance + self.z)
-        x = self.x * factor + win_width / 2
-        y = -self.y * factor + win_height / 2
-        return Point3D(x, y, 1)
+    # def project(self, win_width, win_height, fov, viewer_distance):
+    #     """ Transforms this 3D point to 2D using a perspective projection. """
+    #     factor = fov / (viewer_distance + self.z)
+    #     x = self.x * factor + win_width / 2
+    #     y = -self.y * factor + win_height / 2
+    #     return Point3D(x, y, 1)
 
 
 def rotate_face(points):
@@ -139,9 +124,7 @@ def rotate_face(points):
         # p = r.project(self.screen.get_width(), self.screen.get_height(), 256, 4)
         face.append(r.x), face.append(r.y)
     faceout = face[0:2], face[2:4], face[4:6], face[6:8]
-    print(len(points))
     faceout = faceout[0:len(points)]
-    print("faceout", faceout)
     return faceout
 
 
