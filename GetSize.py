@@ -120,6 +120,28 @@ def find_scale(canvasx, canvasy, tpoints, height, offset):
     lengthdif = xlengthdif, ylengthdif
     return scale, lengthdif
 
+def find_iso_scale(canvasx, canvasy, isopoints, height, offset):
+    # get length of longest X, Y, z lines
+    print(isopoints)
+    xlength = (isopoints[6][3][0] - isopoints[6][0][0]) + offset
+    print(xlength)
+    ylength = height + offset
+    print(ylength)
+    zlength = (isopoints[1][0][2] - isopoints[1][3][2]) + offset
+    print(zlength)
+
+    if canvasx / xlength <= canvasy / ylength and canvasx / xlength <= canvasx / zlength:
+        scale = float(canvasx) / xlength
+        print("X scale")
+    elif canvasy / ylength <= canvasx / xlength and canvasy / ylength <= canvasy / zlength:
+        scale = float(canvasy) / ylength
+        print("Y scale")
+    else:
+        scale = float(canvasx) / zlength
+        print("Z scale")
+    lengthdif = 0, 0
+    return scale, lengthdif
+
 
 def locate_points_canvas(canvasx, canvasy, scale, points, face, offset, lengthdif):
 
@@ -136,7 +158,7 @@ def locate_points_canvas(canvasx, canvasy, scale, points, face, offset, lengthdi
 
     # Front return points Side Move to bottom right then return points
 
-    if face is "front":
+    if face is "front" or face is "free":
         return points
     elif face is "side":
         for x in range(len(points)):

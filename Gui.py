@@ -66,7 +66,7 @@ class Example(Frame):
             htext.insert("1.0", random.randint(20, 60))
             randdraft = "Downdraft", "Updraft"
             stylecbox.set(randdraft[random.randint(0, 1)])
-            create()
+            create_home()
 
 
     # Create floats from inputs
@@ -104,10 +104,19 @@ class Example(Frame):
 
 
     # Display objects on canvas
-        def create():
+        def create_home():
             canvasheight = canvas.winfo_height()
             canvaswidth = canvas.winfo_width()
             canvas.delete("all")
+            draw_home_canvas(canvaswidth, canvasheight)
+
+        def create_free():
+            canvasheight = canvas.winfo_height()
+            canvaswidth = canvas.winfo_width()
+            canvas.delete("all")
+            draw_iso_canvas(canvaswidth, canvasheight)
+
+        def draw_home_canvas(canvaswidth, canvasheight):
             global draft
             draft = stylecbox.get()
             lt, wt, ht, isfloat = get_user_inputs()
@@ -164,16 +173,37 @@ class Example(Frame):
                 canvas.itemconfig(canvas_id, text=sidesizearray[n])
             return
 
+        def draw_iso_canvas(canvaswidth, canvasheight):
+            global draft
+            draft = stylecbox.get()
+            lt, wt, ht, isfloat = get_user_inputs()
+            if not isfloat:
+                return
+            offset = 15
+
+            isopoints = Iso_View.iso_points()
+            scale, lengthdif = GetSize.find_iso_scale(canvaswidth, canvasheight, isopoints, ht, offset)
+            isoscale = scale * .85  # temporary fix for oversized iso view
+            for n in range(len(isopoints)):
+                r = Iso_View.rotate_face(isopoints[n])
+                shape = GetSize.locate_points_canvas(
+                    canvaswidth, canvasheight, isoscale, r, "free", offset, lengthdif)
+                canvas.create_polygon(shape, fill="#ccc", outline="black", width=2)
 
     # Frame objects
         lbl = Label(self, text="Kiln Hoods Calculator", width=20)
         lbl.grid(row=0, column=1, columnspan=2)
-        cbtn = Button(self, text="Create", width=10, command=create)
+        cbtn = Button(self, text="Create", width=10, command=create_home)
         cbtn.grid(row=10, column=0, sticky=N)
+
+        fbtn = Button(self, text="Free View", width=10, command=create_free)
+        fbtn.grid(row=11, column=0, sticky=N)
+
+
         dbtn = Button(self, text="Defaults", width=10, command=setdef)
         dbtn.grid(row=11, column=3, sticky=E)
         hbtn = Button(self, text="Random", width=10, command=randsettings)
-        hbtn.grid(row=11, column=0)
+        hbtn.grid(row=12, column=0)
         quit_button = Button(self, text="Quit", width=10, command=self.quit)
         quit_button.grid(row=12, column=3)
 
