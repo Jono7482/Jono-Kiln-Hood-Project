@@ -114,9 +114,16 @@ class Point3D:
     #     y = -self.y * factor + win_height / 2
     #     return Point3D(x, y, 1)
 
-
-def rotate_face(points):
-    angleX, angleY, angleZ = -22, 22, 0.00001
+movex = 22
+movey = -22
+def rotate_face(points, movement):
+    print("movement = ", movement)
+    global movex, movey
+    movex += movement[0]
+    movey += movement[1]
+    print("movex = ", movex)
+    print("movey = ", movey)
+    angleX, angleY, angleZ = movey, movex, 0.00001
     face = []
     for n in range(len(points)):
         i = Point3D(*points[n])

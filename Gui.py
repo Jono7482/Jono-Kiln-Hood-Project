@@ -6,6 +6,8 @@ import GetSize
 import Mesurements
 import Iso_View
 lt, wt, ht = 0, 0, 0
+freeview = False
+
 
 
 class Example(Frame):
@@ -45,6 +47,34 @@ class Example(Frame):
     # canvas
         canvas = Canvas(self, background="#fff")
         canvas.grid(row=1, column=1, columnspan=2, rowspan=10, padx=4, sticky=N+W+E+S)
+
+        def mouseloc(event):
+            # Mouse Location
+            x = canvas.canvasx(event.x)
+            y = canvas.canvasy(event.y)
+            return x, y
+
+        def press(event):
+            # starting x,y
+            global start
+            start = mouseloc(event)
+
+        def motion(event):
+            # calculate current xy relative to initial xy
+            global start
+            xy = mouseloc(event)
+            movement = (start[0] - xy[0]) * (-1.0000), (start[1] - xy[1]) * (-1.0000)
+            start = xy
+            print("Movement = ", movement)
+            if freeview is True:
+                draw_iso_canvas(movement)
+            else:
+                return
+
+        canvas.bind("<Button-1>", press)
+        canvas.bind("<B1-Motion>", motion)
+
+
 
     # input testing amounts
         def setdef():
@@ -105,16 +135,18 @@ class Example(Frame):
 
     # Display objects on canvas
         def create_home():
+            global freeview
+            freeview = False
             canvasheight = canvas.winfo_height()
             canvaswidth = canvas.winfo_width()
             canvas.delete("all")
             draw_home_canvas(canvaswidth, canvasheight)
 
         def create_free():
-            canvasheight = canvas.winfo_height()
-            canvaswidth = canvas.winfo_width()
-            canvas.delete("all")
-            draw_iso_canvas(canvaswidth, canvasheight)
+            global freeview
+            freeview= True
+            defmovement = 0, 0
+            draw_iso_canvas(defmovement)
 
         def draw_home_canvas(canvaswidth, canvasheight):
             global draft
@@ -151,8 +183,9 @@ class Example(Frame):
             # Iso View
             isoscale = scale * .85  # temporary fix for oversized iso view
             isopoints = Iso_View.iso_points()
+            movement = 0, 0
             for n in range(len(isopoints)):
-                r = Iso_View.rotate_face(isopoints[n])
+                r = Iso_View.rotate_face(isopoints[n], movement)
                 shape = GetSize.locate_points_canvas(
                     canvaswidth, canvasheight, isoscale, r, "iso", offset, lengthdif)
                 canvas.create_polygon(shape, fill="#ccc", outline="black", width=2)
@@ -173,7 +206,10 @@ class Example(Frame):
                 canvas.itemconfig(canvas_id, text=sidesizearray[n])
             return
 
-        def draw_iso_canvas(canvaswidth, canvasheight):
+        def draw_iso_canvas(movement):
+            canvas.delete("all")
+            canvasheight = canvas.winfo_height()
+            canvaswidth = canvas.winfo_width()
             global draft
             draft = stylecbox.get()
             lt, wt, ht, isfloat = get_user_inputs()
@@ -185,7 +221,8 @@ class Example(Frame):
             scale, lengthdif = GetSize.find_iso_scale(canvaswidth, canvasheight, isopoints, ht, offset)
             isoscale = scale * .85  # temporary fix for oversized iso view
             for n in range(len(isopoints)):
-                r = Iso_View.rotate_face(isopoints[n])
+                print("movement = ", movement)
+                r = Iso_View.rotate_face(isopoints[n], movement)
                 shape = GetSize.locate_points_canvas(
                     canvaswidth, canvasheight, isoscale, r, "free", offset, lengthdif)
                 canvas.create_polygon(shape, fill="#ccc", outline="black", width=2)
