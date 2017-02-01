@@ -136,7 +136,6 @@ def find_iso_scale(canvasx, canvasy, isopoints, height, offset):
 
 
 def locate_points_canvas(canvasx, canvasy, scale, points, face, offset, lengthdif):
-
     # Scale points
     lengthdifx = lengthdif[0] * (scale / 2)
     lengthdify = lengthdif[1] * (scale / 2)

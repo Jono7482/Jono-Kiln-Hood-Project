@@ -1,5 +1,6 @@
 import math
 import Gui
+import operator
 movex = 0
 movey = 0
 
@@ -59,6 +60,40 @@ def iso_points():
     return isopoints
 
 
+def draw_order(isopoints, zdepth):
+    points = []
+    print("points = ", points)
+    print("points length = ", len(points))
+    print("zdepth = ", zdepth)
+    print("zdepth length = ", len(zdepth))
+    for x in range(len(isopoints)):
+        print("iso [x] = ", isopoints[x])
+        for xx in range(len(isopoints[x])):
+            points.append(zdepth[x][xx])
+            for xxx in range(len(isopoints[x][xx])):
+                points.append(isopoints[x][xx][xxx])
+
+    newnewpoints = []
+    newnewpoints2 = []
+    g = int()
+    while (g < len(points)):
+        newpoints = points[g:g + 3]
+        newnewpoints.append(newpoints)
+        g += 3
+    j = int()
+    while (j < len(newnewpoints)):
+        newnewpoints1 = newnewpoints[j:j + 4]
+        newnewpoints2.append(newnewpoints1)
+        j += 4
+    print("iso and zdepth = ", newnewpoints2)
+    newnewpoints2.sort(key=operator.itemgetter(0))
+    print("newnewpoints = ", newnewpoints2)
+
+
+
+    return isopoints
+
+
 # code from http://codentronix.com/2011/04/20/simulation-of-3d-point-rotation-with-python-and-pygame/
 class Point3D:
     def __init__(self, x=0, y=0, z=0):
@@ -102,17 +137,38 @@ def reset_movement():
     movex = 22
     movey = -22
 
+# def rotate_face(points, movement):
+#     global movex, movey
+#     movex += movement[0]
+#     movey += movement[1]
+#     angleX, angleY, angleZ = movey, movex, 0.00001
+#     face = []
+#     # depth = []
+#     for n in range(len(points)):
+#         i = Point3D(*points[n])
+#         r = i.rotateX(angleX).rotateY(angleY).rotateZ(angleZ)
+#         # p = r.project(self.screen.get_width(), self.screen.get_height(), 256, 4)
+#         face.append(r.x), face.append(r.y)
+#         # depth.append(r.z)
+#     faceout = face[0:2], face[2:4], face[4:6], face[6:8]
+#     faceout = faceout[0:len(points)]
+#     #print(depth)
+#     print("faceout = ", faceout)
+#     return faceout, #depth
+
 def rotate_face(points, movement):
     global movex, movey
     movex += movement[0]
     movey += movement[1]
     angleX, angleY, angleZ = movey, movex, 0.00001
     face = []
+    zdepth = []
     for n in range(len(points)):
         i = Point3D(*points[n])
         r = i.rotateX(angleX).rotateY(angleY).rotateZ(angleZ)
         # p = r.project(self.screen.get_width(), self.screen.get_height(), 256, 4)
         face.append(r.x), face.append(r.y)
+        zdepth.append(r.z)
     faceout = face[0:2], face[2:4], face[4:6], face[6:8]
     faceout = faceout[0:len(points)]
-    return faceout
+    return faceout, zdepth

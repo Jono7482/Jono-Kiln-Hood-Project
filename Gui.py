@@ -58,6 +58,7 @@ class Example(Frame):
             global start
             start = mouseloc(event)
 
+
         def motion(event):
             # calculate current xy relative to initial xy
             global start
@@ -188,7 +189,8 @@ class Example(Frame):
             isopoints = Iso_View.iso_points()
             movement = 0, 0
             for n in range(len(isopoints)):
-                r = Iso_View.rotate_face(isopoints[n], movement)
+                r, zdepth = Iso_View.rotate_face(isopoints[n], movement)
+                print("r = ", r)
                 shape = GetSize.locate_points_canvas(
                     canvaswidth, canvasheight, isoscale, r, "iso", offset, lengthdif)
                 canvas.create_polygon(shape, fill="#ccc", outline="black", width=2)
@@ -221,14 +223,24 @@ class Example(Frame):
             offset = 15
 
             isopoints = Iso_View.iso_points()
-            # isopoints = Iso_View.set_free_center(isopoints)
+
+
+
             scale, lengthdif = GetSize.find_iso_scale(canvaswidth, canvasheight, isopoints, ht, offset)
             isoscale = scale * .85  # temporary fix for oversized iso view
+            isrotated = []
+            isodepth = []
             for n in range(len(isopoints)):
-                r = Iso_View.rotate_face(isopoints[n], movement)
+                r, zdepth = Iso_View.rotate_face(isopoints[n], movement)
                 shape = GetSize.locate_points_canvas(
                     canvaswidth, canvasheight, isoscale, r, "free", offset, lengthdif)
-                canvas.create_polygon(shape, fill="#ccc", outline="black", width=2)
+                isrotated.append(shape)
+                isodepth.append(zdepth)
+
+
+            todraw = Iso_View.draw_order(isrotated, isodepth)
+            for n in range(len(todraw)):
+                canvas.create_polygon(todraw[n], fill="#ccc", outline="black", width=2)
 
     # Frame objects
         lbl = Label(self, text="Kiln Hoods Calculator", width=20)
