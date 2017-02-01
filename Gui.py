@@ -9,7 +9,6 @@ lt, wt, ht = 0, 0, 0
 freeview = False
 
 
-
 class Example(Frame):
 
     def __init__(self, parent):
@@ -63,9 +62,8 @@ class Example(Frame):
             # calculate current xy relative to initial xy
             global start
             xy = mouseloc(event)
-            movement = (start[0] - xy[0]) * (-1.0000), (start[1] - xy[1]) * (-1.0000)
+            movement = (start[0] - xy[0]) / (20.0000), (start[1] - xy[1]) / (-20.0000)
             start = xy
-            print("Movement = ", movement)
             if freeview is True:
                 draw_iso_canvas(movement)
             else:
@@ -96,7 +94,10 @@ class Example(Frame):
             htext.insert("1.0", random.randint(20, 60))
             randdraft = "Downdraft", "Updraft"
             stylecbox.set(randdraft[random.randint(0, 1)])
-            create_home()
+            if freeview == False:
+                create_home()
+            else:
+                create_free()
 
 
     # Create floats from inputs
@@ -137,6 +138,7 @@ class Example(Frame):
         def create_home():
             global freeview
             freeview = False
+            Iso_View.reset_movement()
             canvasheight = canvas.winfo_height()
             canvaswidth = canvas.winfo_width()
             canvas.delete("all")
@@ -146,6 +148,7 @@ class Example(Frame):
             global freeview
             freeview= True
             defmovement = 0, 0
+            Iso_View.reset_movement()
             draw_iso_canvas(defmovement)
 
         def draw_home_canvas(canvaswidth, canvasheight):
@@ -218,10 +221,10 @@ class Example(Frame):
             offset = 15
 
             isopoints = Iso_View.iso_points()
+            # isopoints = Iso_View.set_free_center(isopoints)
             scale, lengthdif = GetSize.find_iso_scale(canvaswidth, canvasheight, isopoints, ht, offset)
             isoscale = scale * .85  # temporary fix for oversized iso view
             for n in range(len(isopoints)):
-                print("movement = ", movement)
                 r = Iso_View.rotate_face(isopoints[n], movement)
                 shape = GetSize.locate_points_canvas(
                     canvaswidth, canvasheight, isoscale, r, "free", offset, lengthdif)

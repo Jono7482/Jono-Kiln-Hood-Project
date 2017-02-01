@@ -1,27 +1,43 @@
 import math
 import Gui
+movex = 0
+movey = 0
 
 
-# width = 52
-# length = 60.5
-# height = 24
-# skirt = 4
-# top = 16
-# draft = "Downdraft"
-
-    # All face point variables
+# All face point variables
+# def iso_points():
 def iso_points():
     width, length, height, top, skirt, draft = Gui.size_list()
+    hwidth = width/2
+    hlength = length/2
+    hheight = height /2
     bpts = [0, 0, 0], [0, 0, length], [width, 0, length], [width, 0, 0]
     skpts = [0, skirt, 0], [0, skirt, length], [width, skirt, length], [width, skirt, 0]
     tptsud = [(width - top) / 2, height, (length - top) / 2], \
-           [(width - top)/2, height, ((length - top)/2) + top], \
-           [((width - top)/2) + top, height, ((length - top)/2) + top], \
-           [((width - top)/2) + top, height, (length - top)/2]
+        [(width - top) / 2, height, ((length - top) / 2) + top], \
+        [((width - top) / 2) + top, height, ((length - top) / 2) + top], \
+        [((width - top) / 2) + top, height, (length - top) / 2]
     tptsdd = [(width - top) / 2, height, length - top], \
-           [(width - top)/2, height, length], \
-           [((width - top)/2) + top, height, length], \
-           [((width - top)/2) + top, height, length - top]
+        [(width - top) / 2, height, length], \
+        [((width - top) / 2) + top, height, length], \
+        [((width - top) / 2) + top, height, length - top]
+
+    for x in range(len(bpts)):
+        bpts[x][0] -= hwidth
+        bpts[x][1] -= hheight
+        bpts[x][2] -= hlength
+    for x in range(len(skpts)):
+        skpts[x][0] -= hwidth
+        skpts[x][1] -= hheight
+        skpts[x][2] -= hlength
+    for x in range(len(tptsud)):
+        tptsud[x][0] -= hwidth
+        tptsud[x][1] -= hheight
+        tptsud[x][2] -= hlength
+    for x in range(len(tptsdd)):
+        tptsdd[x][0] -= hwidth
+        tptsdd[x][1] -= hheight
+        tptsdd[x][2] -= hlength
 
     if draft == "Downdraft":
         tpts = tptsdd
@@ -41,38 +57,6 @@ def iso_points():
 
     isopoints = bskf, lskf, bf, lf, rskf, rf, fskf, ff, tpts
     return isopoints
-
-    # if face == "fskf":
-    #     return fskf
-    # elif face == "rskf":
-    #     return rskf
-    # elif face == "lskf":
-    #     return lskf
-    # elif face == "bskf":
-    #     return bskf
-    # elif face == "ff":
-    #     return ff
-    # elif face == "rf":
-    #     return rf
-    # elif face == "lf":
-    #     return lf
-    # elif face == "bf":
-    #     return bf
-    # elif face == "tpts":
-    #     return tpts
-
-
-    # elif face == "holef":
-    #     hole = 12
-    #     holeoffset = 0 #(top - hole) / 2
-    #     h1 = [tpts[0][0] + holeoffset,tpts[3][1], tpts[0][2] - holeoffset]
-    #     h2 = [tpts[2][0] - holeoffset,tpts[1][1], tpts[2][2] - holeoffset]
-    #     holef = h2, h1
-    #     print("holef", holef)
-    #     return holef
-
-    # else:
-    #     print("Error face must match a variable name")
 
 
 # code from http://codentronix.com/2011/04/20/simulation-of-3d-point-rotation-with-python-and-pygame/
@@ -113,16 +97,15 @@ class Point3D:
     #     x = self.x * factor + win_width / 2
     #     y = -self.y * factor + win_height / 2
     #     return Point3D(x, y, 1)
+def reset_movement():
+    global movex, movey
+    movex = 22
+    movey = -22
 
-movex = 22
-movey = -22
 def rotate_face(points, movement):
-    print("movement = ", movement)
     global movex, movey
     movex += movement[0]
     movey += movement[1]
-    print("movex = ", movex)
-    print("movey = ", movey)
     angleX, angleY, angleZ = movey, movex, 0.00001
     face = []
     for n in range(len(points)):
@@ -133,6 +116,3 @@ def rotate_face(points, movement):
     faceout = face[0:2], face[2:4], face[4:6], face[6:8]
     faceout = faceout[0:len(points)]
     return faceout
-
-
-# *ff[n]
