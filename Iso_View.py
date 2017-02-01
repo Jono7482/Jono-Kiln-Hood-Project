@@ -75,6 +75,8 @@ def draw_order(isopoints, zdepth):
 
     newnewpoints = []
     newnewpoints2 = []
+    newnewpoints4 = []
+    newnewpoints6 = []
     g = int()
     while (g < len(points)):
         newpoints = points[g:g + 3]
@@ -86,12 +88,36 @@ def draw_order(isopoints, zdepth):
         newnewpoints2.append(newnewpoints1)
         j += 4
     print("iso and zdepth = ", newnewpoints2)
+    print("newnewpoints2 = ", newnewpoints2)
     newnewpoints2.sort(key=operator.itemgetter(0))
-    print("newnewpoints = ", newnewpoints2)
 
 
+    print("newnewpoints2 = ", newnewpoints2)
 
-    return isopoints
+    k = 0
+    while (k < 9): # (len(newnewpoints2)):
+        kk = 0
+        # for kk in range(0, 4): # (len(newnewpoints2[k])):
+        while (kk < 4):
+            print("k = ", k)
+            print("kk = ", kk)
+            print("newnewpoints2[k][kk] = ", newnewpoints2[k][kk])
+            newnewpoints3 = [newnewpoints2[k][kk][1], newnewpoints2[k][kk][2]]
+            newnewpoints4.append(newnewpoints3)
+            print("newnewpoints4 = ", newnewpoints4)
+            kk += 1
+
+        print("k = ", k)
+        #print("newnewpoints4 = ", newnewpoints4)
+        newnewpoints5 = newnewpoints4[k], newnewpoints4[k + 1], newnewpoints4[k + 2], newnewpoints4[k + 3]
+        newnewpoints6.append(newnewpoints5)
+        k += 1
+
+    print("newnewpoints6 = ", newnewpoints6)
+    print("isopoints =     ", isopoints)
+
+    return newnewpoints6
+    # return newnewpoints6
 
 
 # code from http://codentronix.com/2011/04/20/simulation-of-3d-point-rotation-with-python-and-pygame/
