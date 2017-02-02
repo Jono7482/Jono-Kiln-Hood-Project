@@ -61,63 +61,77 @@ def iso_points():
 
 
 def draw_order(isopoints, zdepth):
+
+    for x in range(len(zdepth)):
+        zdepth.sort(key=operator.itemgetter(0))
+        print(zdepth[x])
+        zdepth[x][0] = zdepth[x][0] + zdepth[x][3]
+        zdepth[x][1] = zdepth[x][0]
+        zdepth[x][2] = zdepth[x][0]
+        zdepth[x][3] = zdepth[x][0]
+        # print(zdepth[x][0])
+
+
+
     points = []
-    print("points = ", points)
-    print("points length = ", len(points))
-    print("zdepth = ", zdepth)
-    print("zdepth length = ", len(zdepth))
     for x in range(len(isopoints)):
-        print("iso [x] = ", isopoints[x])
         for xx in range(len(isopoints[x])):
             points.append(zdepth[x][xx])
             for xxx in range(len(isopoints[x][xx])):
                 points.append(isopoints[x][xx][xxx])
 
+
     newnewpoints = []
     newnewpoints2 = []
     newnewpoints4 = []
     newnewpoints6 = []
-    g = int()
+    g = int(0)
     while (g < len(points)):
         newpoints = points[g:g + 3]
         newnewpoints.append(newpoints)
         g += 3
-    j = int()
+        j = int(0)
     while (j < len(newnewpoints)):
         newnewpoints1 = newnewpoints[j:j + 4]
         newnewpoints2.append(newnewpoints1)
         j += 4
-    print("iso and zdepth = ", newnewpoints2)
-    print("newnewpoints2 = ", newnewpoints2)
-    newnewpoints2.sort(key=operator.itemgetter(0))
 
 
-    print("newnewpoints2 = ", newnewpoints2)
+    newnewpoints2.sort(key=operator.itemgetter(0), reverse=True)
+
 
     k = 0
     while (k < 9): # (len(newnewpoints2)):
         kk = 0
         # for kk in range(0, 4): # (len(newnewpoints2[k])):
         while (kk < 4):
-            print("k = ", k)
-            print("kk = ", kk)
-            print("newnewpoints2[k][kk] = ", newnewpoints2[k][kk])
             newnewpoints3 = [newnewpoints2[k][kk][1], newnewpoints2[k][kk][2]]
             newnewpoints4.append(newnewpoints3)
-            print("newnewpoints4 = ", newnewpoints4)
             kk += 1
-
-        print("k = ", k)
+        k += 1
         #print("newnewpoints4 = ", newnewpoints4)
+    k = 0
+    while (k < 36):
         newnewpoints5 = newnewpoints4[k], newnewpoints4[k + 1], newnewpoints4[k + 2], newnewpoints4[k + 3]
         newnewpoints6.append(newnewpoints5)
-        k += 1
+        k += 4
+    # y = 0
+    # for x in range(0, 9):
+    #     print("newnewpoints4[", y, ":y+4] = ", newnewpoints4[y:y + 4])
+    #     print("isopoints[", x, "] = ", isopoints[x])
+    #     y += 4
 
-    print("newnewpoints6 = ", newnewpoints6)
-    print("isopoints =     ", isopoints)
+    # for x in range(0, 9):
+    #     print("newnewpoints[", x, "] = ", newnewpoints6[x])
+    #     print("isopoints[", x, "] = ", isopoints[x])
+    # print("newnewpoints6 = ", newnewpoints6)
+    # print("isopoints =     ", isopoints)
+    isopoints = isopoints
+    # newnewpoints6 = [newnewpoints6]
 
-    return newnewpoints6
     # return newnewpoints6
+    return newnewpoints6
+
 
 
 # code from http://codentronix.com/2011/04/20/simulation-of-3d-point-rotation-with-python-and-pygame/
