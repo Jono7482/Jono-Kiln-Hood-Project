@@ -130,7 +130,7 @@ def find_iso_scale(canvasx, canvasy, isopoints, height, offset):
     elif canvasy / ylength <= canvasx / xlength and canvasy / ylength <= canvasy / zlength:
         scale = float(canvasy) / ylength
     else:
-        scale = float(canvasx) / zlength
+        scale = float(canvasy) / zlength
     lengthdif = 0, 0
     return scale, lengthdif
 

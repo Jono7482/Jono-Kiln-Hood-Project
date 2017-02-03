@@ -5,7 +5,7 @@ from tkinter.ttk import Combobox
 import GetSize
 import Mesurements
 import Iso_View
-lt, wt, ht = 0, 0, 0
+wt, lt, ht = 0, 0, 0
 freeview = False
 
 
@@ -63,7 +63,7 @@ class Example(Frame):
             # calculate current xy relative to initial xy
             global start
             xy = mouseloc(event)
-            movement = (start[0] - xy[0]) / (20.0000), (start[1] - xy[1]) / (-20.0000)
+            movement = (start[0] - xy[0]) / (15.0000), (start[1] - xy[1]) / (15.0000)
             start = xy
             if freeview is True:
                 draw_iso_canvas(movement)
@@ -221,7 +221,6 @@ class Example(Frame):
             if not isfloat:
                 return
             offset = 15
-
             isopoints = Iso_View.iso_points()
 
 
@@ -285,8 +284,8 @@ class Example(Frame):
         fakelbl.grid(row=9, column=0, sticky=W + S)
 
 def size_list():
-    global lt, wt, ht, top, skirt, draft
-    sizelist = lt, wt, ht, top, skirt, draft
+    global wt, lt, ht, top, skirt, draft
+    sizelist = wt, lt, ht, top, skirt, draft
     return sizelist
 
 def main():

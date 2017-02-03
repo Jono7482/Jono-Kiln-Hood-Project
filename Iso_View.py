@@ -1,6 +1,7 @@
 import math
 import Gui
 import operator
+
 movex = 0
 movey = 0
 
@@ -61,76 +62,48 @@ def iso_points():
 
 
 def draw_order(isopoints, zdepth):
-
+    points, points1, points2, points3, points4 = [], [], [], [], []
+    # Sort Z axis for each face, adding the largest to the smallest to use for draw order
     for x in range(len(zdepth)):
-        zdepth.sort(key=operator.itemgetter(0))
-        print(zdepth[x])
-        zdepth[x][0] = zdepth[x][0] + zdepth[x][3]
-        zdepth[x][1] = zdepth[x][0]
-        zdepth[x][2] = zdepth[x][0]
-        zdepth[x][3] = zdepth[x][0]
-        # print(zdepth[x][0])
-
-
-
-    points = []
+        zdepth[x].sort(reverse=True)
+        zdepth[x][0] += zdepth[x][3]
+    # Adding in z axis to x and y axis one long list z, x, y, z, x, y...
     for x in range(len(isopoints)):
         for xx in range(len(isopoints[x])):
             points.append(zdepth[x][xx])
             for xxx in range(len(isopoints[x][xx])):
                 points.append(isopoints[x][xx][xxx])
-
-
-    newnewpoints = []
-    newnewpoints2 = []
-    newnewpoints4 = []
-    newnewpoints6 = []
-    g = int(0)
-    while (g < len(points)):
-        newpoints = points[g:g + 3]
-        newnewpoints.append(newpoints)
-        g += 3
-        j = int(0)
-    while (j < len(newnewpoints)):
-        newnewpoints1 = newnewpoints[j:j + 4]
-        newnewpoints2.append(newnewpoints1)
-        j += 4
-
-
-    newnewpoints2.sort(key=operator.itemgetter(0), reverse=True)
-
-
-    k = 0
-    while (k < 9): # (len(newnewpoints2)):
-        kk = 0
-        # for kk in range(0, 4): # (len(newnewpoints2[k])):
-        while (kk < 4):
-            newnewpoints3 = [newnewpoints2[k][kk][1], newnewpoints2[k][kk][2]]
-            newnewpoints4.append(newnewpoints3)
-            kk += 1
-        k += 1
-        #print("newnewpoints4 = ", newnewpoints4)
-    k = 0
-    while (k < 36):
-        newnewpoints5 = newnewpoints4[k], newnewpoints4[k + 1], newnewpoints4[k + 2], newnewpoints4[k + 3]
-        newnewpoints6.append(newnewpoints5)
-        k += 4
-    # y = 0
-    # for x in range(0, 9):
-    #     print("newnewpoints4[", y, ":y+4] = ", newnewpoints4[y:y + 4])
-    #     print("isopoints[", x, "] = ", isopoints[x])
-    #     y += 4
-
-    # for x in range(0, 9):
-    #     print("newnewpoints[", x, "] = ", newnewpoints6[x])
-    #     print("isopoints[", x, "] = ", isopoints[x])
-    # print("newnewpoints6 = ", newnewpoints6)
-    # print("isopoints =     ", isopoints)
-    isopoints = isopoints
-    # newnewpoints6 = [newnewpoints6]
-
-    # return newnewpoints6
-    return newnewpoints6
+    # group all sets of points [z, x, y]...
+    x = 0
+    while (x < len(points)):
+        pointsx = points[x:x + 3]
+        points1.append(pointsx)
+        x += 3
+    # group all points into faces [face[z, x, y], [face[z, x, y]....
+    x = 0
+    while (x < len(points1)):
+        pointsx = points1[x:x + 4]
+        points2.append(pointsx)
+        x += 4
+    # sort all faces by z axis
+    points2.sort(key=operator.itemgetter(0), reverse=True)
+    # go through all points and remove z axis
+    x = 0
+    while (x < 9):
+        xx = 0
+        while (xx < 4):
+            pointsx = [points2[x][xx][1], points2[x][xx][2]]
+            points3.append(pointsx)
+            xx += 1
+        x += 1
+    # Format wasn't working changed from [[[]]] to [([])]
+    x = 0
+    while (x < 36):
+        pointsx = points3[x], points3[x + 1], points3[x + 2], points3[x + 3]
+        points4.append(pointsx)
+        x += 4
+    # and fucking finally it kinda works
+    return points4
 
 
 
@@ -166,47 +139,22 @@ class Point3D:
         y = self.x * sina + self.y * cosa
         return Point3D(x, y, self.z)
 
-    # def project(self, win_width, win_height, fov, viewer_distance):
-    #     """ Transforms this 3D point to 2D using a perspective projection. """
-    #     factor = fov / (viewer_distance + self.z)
-    #     x = self.x * factor + win_width / 2
-    #     y = -self.y * factor + win_height / 2
-    #     return Point3D(x, y, 1)
+
 def reset_movement():
     global movex, movey
     movex = 22
     movey = -22
 
-# def rotate_face(points, movement):
-#     global movex, movey
-#     movex += movement[0]
-#     movey += movement[1]
-#     angleX, angleY, angleZ = movey, movex, 0.00001
-#     face = []
-#     # depth = []
-#     for n in range(len(points)):
-#         i = Point3D(*points[n])
-#         r = i.rotateX(angleX).rotateY(angleY).rotateZ(angleZ)
-#         # p = r.project(self.screen.get_width(), self.screen.get_height(), 256, 4)
-#         face.append(r.x), face.append(r.y)
-#         # depth.append(r.z)
-#     faceout = face[0:2], face[2:4], face[4:6], face[6:8]
-#     faceout = faceout[0:len(points)]
-#     #print(depth)
-#     print("faceout = ", faceout)
-#     return faceout, #depth
 
 def rotate_face(points, movement):
     global movex, movey
     movex += movement[0]
     movey += movement[1]
     angleX, angleY, angleZ = movey, movex, 0.00001
-    face = []
-    zdepth = []
+    face, zdepth = [], []
     for n in range(len(points)):
         i = Point3D(*points[n])
         r = i.rotateX(angleX).rotateY(angleY).rotateZ(angleZ)
-        # p = r.project(self.screen.get_width(), self.screen.get_height(), 256, 4)
         face.append(r.x), face.append(r.y)
         zdepth.append(r.z)
     faceout = face[0:2], face[2:4], face[4:6], face[6:8]
