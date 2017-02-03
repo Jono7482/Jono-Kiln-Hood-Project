@@ -104,7 +104,7 @@ class Example(Frame):
     # Create floats from inputs
         def get_user_inputs():
             isfloat = bool(1)
-            global lt, wt, ht
+            global wt, lt, ht
             global top
             global skirt
             top = 16
@@ -124,10 +124,10 @@ class Example(Frame):
             except ValueError:
                 print("Height must be a number!")
                 isfloat = False
-            return lt, wt, ht, isfloat
+            return wt, lt, ht, isfloat
 
     # Get points
-        def get_points(lt, wt, ht, draft):
+        def get_points(wt, lt, ht, draft):
             fpoints = GetSize.create_points(wt, ht, draft, "Front")
             spoints = GetSize.create_points(lt, ht, draft, "Side")
             tpoints = GetSize.create_points(wt, lt, draft, "Top")
@@ -155,10 +155,10 @@ class Example(Frame):
         def draw_home_canvas(canvaswidth, canvasheight):
             global draft
             draft = stylecbox.get()
-            lt, wt, ht, isfloat = get_user_inputs()
+            wt, lt, ht, isfloat = get_user_inputs()
             if not isfloat:
                 return
-            fpoints, spoints, tpoints, hpoints = get_points(lt, wt, ht, draft)
+            fpoints, spoints, tpoints, hpoints = get_points(wt, lt, ht, draft)
 
             # Scale points to canvas
             offset = 15
@@ -190,7 +190,6 @@ class Example(Frame):
             movement = 0, 0
             for n in range(len(isopoints)):
                 r, zdepth = Iso_View.rotate_face(isopoints[n], movement)
-                print("r = ", r)
                 shape = GetSize.locate_points_canvas(
                     canvaswidth, canvasheight, isoscale, r, "iso", offset, lengthdif)
                 canvas.create_polygon(shape, fill="#ccc", outline="black", width=2)
@@ -217,7 +216,7 @@ class Example(Frame):
             canvaswidth = canvas.winfo_width()
             global draft
             draft = stylecbox.get()
-            lt, wt, ht, isfloat = get_user_inputs()
+            wt, lt, ht, isfloat = get_user_inputs()
             if not isfloat:
                 return
             offset = 15

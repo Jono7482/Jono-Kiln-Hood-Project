@@ -2,45 +2,36 @@ import math
 import Gui
 import operator
 
-movex = 0
-movey = 0
+movex, movey = 0, 0
+
+
+def sub_half(var, wlh):
+    for n in range(len(var)):
+        for x in range(len(var[n])):
+            var[n][x] -= wlh[x] / 2
+    return var
 
 
 # All face point variables
-# def iso_points():
 def iso_points():
     width, length, height, top, skirt, draft = Gui.size_list()
-    hwidth = width/2
-    hlength = length/2
-    hheight = height /2
+    wlh = [width, height, length]
+    wt2 = (width - top) / 2
+    lt2 = (length - top) / 2
     bpts = [0, 0, 0], [0, 0, length], [width, 0, length], [width, 0, 0]
     skpts = [0, skirt, 0], [0, skirt, length], [width, skirt, length], [width, skirt, 0]
-    tptsud = [(width - top) / 2, height, (length - top) / 2], \
-        [(width - top) / 2, height, ((length - top) / 2) + top], \
-        [((width - top) / 2) + top, height, ((length - top) / 2) + top], \
-        [((width - top) / 2) + top, height, (length - top) / 2]
-    tptsdd = [(width - top) / 2, height, length - top], \
-        [(width - top) / 2, height, length], \
-        [((width - top) / 2) + top, height, length], \
-        [((width - top) / 2) + top, height, length - top]
-
-    for x in range(len(bpts)):
-        bpts[x][0] -= hwidth
-        bpts[x][1] -= hheight
-        bpts[x][2] -= hlength
-    for x in range(len(skpts)):
-        skpts[x][0] -= hwidth
-        skpts[x][1] -= hheight
-        skpts[x][2] -= hlength
-    for x in range(len(tptsud)):
-        tptsud[x][0] -= hwidth
-        tptsud[x][1] -= hheight
-        tptsud[x][2] -= hlength
-    for x in range(len(tptsdd)):
-        tptsdd[x][0] -= hwidth
-        tptsdd[x][1] -= hheight
-        tptsdd[x][2] -= hlength
-
+    tptsud = [wt2, height, lt2], \
+             [wt2, height, lt2 + top], \
+             [wt2 + top, height, lt2 + top], \
+             [wt2 + top, height, lt2]
+    tptsdd = [wt2, height, length - top], \
+             [wt2, height, length], \
+             [wt2 + top, height, length], \
+             [wt2 + top, height, length - top]
+    bpts = sub_half(bpts, wlh)
+    skpts = sub_half(skpts, wlh)
+    tptsud = sub_half(tptsud, wlh)
+    tptsdd = sub_half(tptsdd, wlh)
     if draft == "Downdraft":
         tpts = tptsdd
     elif draft == "Updraft":
@@ -56,7 +47,6 @@ def iso_points():
     rf = skpts[3], tpts[3], tpts[2], skpts[2]
     lf = skpts[1], tpts[1], tpts[0], skpts[0]
     bf = skpts[2], tpts[2], tpts[1], skpts[1]
-
     isopoints = bskf, lskf, bf, lf, rskf, rf, fskf, ff, tpts
     return isopoints
 
