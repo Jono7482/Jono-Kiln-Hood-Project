@@ -1,4 +1,4 @@
-
+import math
 
 def get_measurement_cords(points):
     facia = break_down_list_float(points, 0, 1)
@@ -33,3 +33,12 @@ def size_array(x, ht):
     top = 16
     sizearray = [facia, top, x, ht]
     return sizearray
+
+
+# sqrt((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)
+def line_length(pointa, pointb):
+    x = (pointb[0] - pointa[0]) ** 2
+    y = (pointb[1] - pointa[1]) ** 2
+    z = (pointb[2] - pointa[2]) ** 2
+    l = math.sqrt(sum(x, y, z))
+    return l

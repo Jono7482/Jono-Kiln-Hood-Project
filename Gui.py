@@ -7,6 +7,7 @@ import Mesurements
 import Iso_View
 wt, lt, ht = 0, 0, 0
 freeview = False
+runonce = True
 
 
 class Example(Frame):
@@ -239,6 +240,12 @@ class Example(Frame):
             todraw = Iso_View.draw_order(isrotated, isodepth)
             for n in range(len(todraw)):
                 canvas.create_polygon(todraw[n], fill="#ccc", outline="black", width=2)
+            global runonce
+            if runonce:
+                print("run once")
+                runonce = False
+                canvas_id = canvas.create_text(canvaswidth / 2, canvasheight / 8)
+                canvas.itemconfig(canvas_id, font=("Courier", 20), text="Click and drag to rotate!")
 
     # Frame objects
         lbl = Label(self, text="Kiln Hoods Calculator", width=20)
@@ -288,7 +295,6 @@ def size_list():
     return sizelist
 
 def main():
-
     root = Tk()
     Example(root)
     root.mainloop()
