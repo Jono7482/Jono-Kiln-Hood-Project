@@ -146,6 +146,8 @@ class Example(Frame):
             canvas.delete("all")
             draw_home_canvas(canvaswidth, canvasheight)
 
+            Mesurements.home_measurements() #temp testing
+
         def create_free():
             global freeview
             freeview= True
@@ -203,6 +205,9 @@ class Example(Frame):
             sidesizearray = Mesurements.size_array(lt, ht)
 
             # print measurements to canvas
+
+            Mesurements.loc_size_output(fpoints, spoints, tpoints, isopoints)
+
             for n in range(0, 4):
                 canvas_id = canvas.create_text(frontcords[n])
                 canvas.itemconfig(canvas_id, text=frontsizearray[n])
