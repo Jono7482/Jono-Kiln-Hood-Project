@@ -5,7 +5,8 @@ from tkinter.ttk import Combobox
 import GetSize
 import Mesurements
 import Iso_View
-wt, lt, ht = 0, 0, 0
+wt, lt, ht, top, skirt = 0, 0, 0, 0, 0
+draft = int
 freeview = False
 runonce = True
 
@@ -21,8 +22,7 @@ class Example(Frame):
         self.centerwindow()
 
     def centerwindow(self):
-
-    # Setting up Window
+        # Setting up Window
         w = 800
         h = 600
         sw = self.parent.winfo_screenwidth()
@@ -34,7 +34,7 @@ class Example(Frame):
         # self.parent.attributes('-topmost', 1) # dunno
         # self.parent.attributes("-fullscreen", True) #fullscreen
 
-    # Setting Grid
+        # Setting Grid
         self.columnconfigure(1, weight=1)  # column 1 and 2 stretch for canvas
         self.columnconfigure(2, weight=1)
         # for x in range(0, 12): # pad all rows
@@ -44,9 +44,11 @@ class Example(Frame):
         self.rowconfigure(11, pad=8)
         self.rowconfigure(12, pad=8)
 
-    # canvas
+        # canvas
         canvas = Canvas(self, background="#fff")
         canvas.grid(row=1, column=1, columnspan=2, rowspan=10, padx=4, sticky=N+W+E+S)
+
+        start = []
 
         def mouseloc(event):
             # Mouse Location
@@ -59,12 +61,11 @@ class Example(Frame):
             global start
             start = mouseloc(event)
 
-
         def motion(event):
             # calculate current xy relative to initial xy
             global start
             xy = mouseloc(event)
-            movement = (start[0] - xy[0]) / (15.0000), (start[1] - xy[1]) / (15.0000)
+            movement = (start[0] - xy[0]) / 15.0000, (start[1] - xy[1]) / 15.0000
             start = xy
             if freeview is True:
                 draw_iso_canvas(movement)
@@ -73,8 +74,6 @@ class Example(Frame):
 
         canvas.bind("<Button-1>", press)
         canvas.bind("<B1-Motion>", motion)
-
-
 
     # input testing amounts
         def setdef():
@@ -96,11 +95,19 @@ class Example(Frame):
             htext.insert("1.0", random.randint(20, 60))
             randdraft = "Downdraft", "Updraft"
             stylecbox.set(randdraft[random.randint(0, 1)])
-            if freeview == False:
+            if freeview is False:
                 create_home()
             else:
                 create_free()
 
+        def measvis():
+            if draft == None:
+                if freeview is False:
+                    create_home()
+                else:
+                    create_free()
+            else:
+                return
 
     # Create floats from inputs
         def get_user_inputs():
@@ -128,13 +135,17 @@ class Example(Frame):
             return wt, lt, ht, isfloat
 
     # Get points
-        def get_points(wt, lt, ht, draft):
+        def get_points():
+            global wt
+            global lt
+            global ht
+            global draft
+
             fpoints = GetSize.create_points(wt, ht, draft, "Front")
             spoints = GetSize.create_points(lt, ht, draft, "Side")
             tpoints = GetSize.create_points(wt, lt, draft, "Top")
             hpoints = GetSize.create_points(wt, lt, draft, "Hole")
             return fpoints, spoints, tpoints, hpoints
-
 
     # Display objects on canvas
         def create_home():
@@ -146,22 +157,23 @@ class Example(Frame):
             canvas.delete("all")
             draw_home_canvas(canvaswidth, canvasheight)
 
-            Mesurements.home_measurements() #temp testing
-
         def create_free():
             global freeview
-            freeview= True
+            freeview = True
             defmovement = 0, 0
             Iso_View.reset_movement()
             draw_iso_canvas(defmovement)
 
         def draw_home_canvas(canvaswidth, canvasheight):
             global draft
+            global wt
+            global lt
+            global ht
             draft = stylecbox.get()
             wt, lt, ht, isfloat = get_user_inputs()
             if not isfloat:
                 return
-            fpoints, spoints, tpoints, hpoints = get_points(wt, lt, ht, draft)
+            fpoints, spoints, tpoints, hpoints = get_points()
 
             # Scale points to canvas
             offset = 15
@@ -190,30 +202,25 @@ class Example(Frame):
             # Iso View
             isoscale = scale * .85  # temporary fix for oversized iso view
             isopoints = Iso_View.iso_points()
+            scaledisopoints = []
+
             movement = 0, 0
             for n in range(len(isopoints)):
                 r, zdepth = Iso_View.rotate_face(isopoints[n], movement)
                 shape = GetSize.locate_points_canvas(
                     canvaswidth, canvasheight, isoscale, r, "iso", offset, lengthdif)
+                scaledisopoints.append(shape)
                 canvas.create_polygon(shape, fill="#ccc", outline="black", width=2)
+            checke = var1
+            print(checke)
+            if checke:
+                Mesurements.home_measurements()
+                locnsize = Mesurements.loc_size_output(fpoints, spoints, tpoints, scaledisopoints)
+                for each in locnsize:
+                    each[2] = round(each[2], 3)
+                    canvas_id = canvas.create_text(each[0:2])
+                    canvas.itemconfig(canvas_id, text=each[2], fill="#33c", font=("Courier", 9, "bold"))
 
-            # get measurement locations
-            frontcords = Mesurements.get_measurement_cords(frontshape)
-            sidecords = Mesurements.get_measurement_cords(sideshape)
-            # Get size arrays
-            frontsizearray = Mesurements.size_array(wt, ht)
-            sidesizearray = Mesurements.size_array(lt, ht)
-
-            # print measurements to canvas
-
-            Mesurements.loc_size_output(fpoints, spoints, tpoints, isopoints)
-
-            for n in range(0, 4):
-                canvas_id = canvas.create_text(frontcords[n])
-                canvas.itemconfig(canvas_id, text=frontsizearray[n])
-            for n in range(0, 4):
-                canvas_id = canvas.create_text(sidecords[n])
-                canvas.itemconfig(canvas_id, text=sidesizearray[n])
             return
 
         def draw_iso_canvas(movement):
@@ -221,14 +228,15 @@ class Example(Frame):
             canvasheight = canvas.winfo_height()
             canvaswidth = canvas.winfo_width()
             global draft
+            global wt
+            global lt
+            global ht
             draft = stylecbox.get()
             wt, lt, ht, isfloat = get_user_inputs()
             if not isfloat:
                 return
             offset = 15
             isopoints = Iso_View.iso_points()
-
-
 
             scale, lengthdif = GetSize.find_iso_scale(canvaswidth, canvasheight, isopoints, ht, offset)
             isoscale = scale * .85  # temporary fix for oversized iso view
@@ -240,7 +248,6 @@ class Example(Frame):
                     canvaswidth, canvasheight, isoscale, r, "free", offset, lengthdif)
                 isrotated.append(shape)
                 isodepth.append(zdepth)
-
 
             todraw = Iso_View.draw_order(isrotated, isodepth)
             for n in range(len(todraw)):
@@ -259,15 +266,19 @@ class Example(Frame):
         cbtn.grid(row=10, column=0, sticky=N)
 
         fbtn = Button(self, text="Free View", width=10, command=create_free)
-        fbtn.grid(row=11, column=0, sticky=N)
+        fbtn.grid(row=12, column=0, sticky=N)
 
+        var1 = IntVar()
+        checkbut = Checkbutton(self, text="Measurements", variable=var1, command=measvis(), onvalue=1, offvalue=0)
+        checkbut.grid(row=11, column=0, sticky=N)
+        print(var1)
 
         dbtn = Button(self, text="Defaults", width=10, command=setdef)
-        dbtn.grid(row=11, column=3, sticky=E)
+        dbtn.grid(row=12, column=3, sticky=E)
         hbtn = Button(self, text="Random", width=10, command=randsettings)
-        hbtn.grid(row=12, column=0)
+        hbtn.grid(row=13, column=0)
         quit_button = Button(self, text="Quit", width=10, command=self.quit)
-        quit_button.grid(row=12, column=3)
+        quit_button.grid(row=13, column=3)
 
         llbl = Label(self, text="Length:", width=10, background="#aaa")
         llbl.grid(row=1, column=0, sticky=W+S)
@@ -294,10 +305,12 @@ class Example(Frame):
         fakelbl = Label(self, text="    ", width=10, background="#aaa")
         fakelbl.grid(row=9, column=0, sticky=W + S)
 
+
 def size_list():
     global wt, lt, ht, top, skirt, draft
     sizelist = wt, lt, ht, top, skirt, draft
     return sizelist
+
 
 def main():
     root = Tk()

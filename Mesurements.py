@@ -2,29 +2,6 @@ import math
 import Gui
 import Iso_View
 
-def get_measurement_cords(points):
-    facia = get_middle(points, 0, 1)
-    # seem = break_down_list_float(points, 1, 2)
-    top = get_middle(points, 2, 3)
-    bottom = get_middle(points, 5, 0)
-    heightindex = [bottom, top]
-    height = get_middle(heightindex, 0, 1)
-
-    facia[0] += 20
-    # seem[0] += 20
-    top[1] += 10
-    bottom[1] -= 10
-
-    cords = [facia, top, bottom, height]
-    return cords
-
-
-def size_array(x, ht):
-    facia = 4
-    top = 16
-    sizearray = [facia, top, x, ht]
-    return sizearray
-
 
 def get_middle(variable, index1, index2):
     aa = variable[index1][0]
@@ -85,13 +62,11 @@ def home_measurements():
     ffseem = line_length(isopoints[7][0], isopoints[7][1])  # iso seem between front and side
     bfseem = line_length(isopoints[2][0], isopoints[2][1])  # iso seem between back and side
     measurementarray = [skirt, fhyp, top, wt, shyp, lt, ht, fbend, sbend, ffseem, bfseem]
-    for x in range(len(measurementarray)):
-        print(x, " = ", measurementarray[x])
     return measurementarray
 
 
-# sqrt((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)
 def line_length(pointa, pointb):
+    # sqrt((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)
     x = (pointb[0] - pointa[0]) ** 2
     y = (pointb[1] - pointa[1]) ** 2
     z = (pointb[2] - pointa[2]) ** 2
@@ -100,32 +75,77 @@ def line_length(pointa, pointb):
 
 
 def loc_size_output(front, side, top, iso):
-    # format out [x, y, size]
+    # sizearray format skirt, fhyp, top, wt, shyp, lt, ht, fbend, sbend, ffseem, bfseem
     sizearray = home_measurements()
 
     # locations front
     # width, angle, side face, top, skirt
     frontwidth = get_middle(front, 0, 5)
+    frontwidth.append(sizearray[3])
+    frontwidth[1] -= 9
     frontangle = front[1]
+    frontangle.append(sizearray[8])
+    frontangle[0] += 12
+    frontangle[1] += 3
     frontface = get_middle(front, 1, 2)
+    frontface.append(sizearray[1])
+    frontface[0] += 25
     fronttop = get_middle(front, 2, 3)
+    fronttop.append(sizearray[2])
+    fronttop[1] += 9
     frontskirt = get_middle(front, 4, 5)
+    frontskirt.append(sizearray[0])
+    frontskirt[0] -= 12
 
     # locations side
     # length, height, top, front face, angle
     sidelength = get_middle(side, 0, 5)
+    sidelength.append(sizearray[5])
+    sidelength[1] -= 9
     sideheight = get_middle(side, 0, 2)
+    sideheight.append(sizearray[6])
+    sideheight[0] += 25
     sidetop = get_middle(side, 2, 3)
+    sidetop.append(sizearray[2])
+    sidetop[1] += 9
     sideface = get_middle(side, 3, 4)
+    sideface.append(sizearray[4])
+    sideface[0] -= 35
+    sideface[1] += 6
     sideangle = side[4]
+    sideangle.append(sizearray[7])
+    sideangle[0] -= 25
+    sideangle[1] += 3
 
     # locations top
     # width, length, top
     topwidth = get_middle(top, 0, 3)
+    topwidth.append(sizearray[3])
+    topwidth[1] -= 9
     toplength = get_middle(top, 2, 3)
+    toplength.append(sizearray[5])
+    toplength[0] -= 25
+    toplength[1] -= 20
     toptop = get_middle(top, 4, 7)
+    toptop.append(sizearray[2])
+    toptop[1] += 9
 
     # locations iso
+    # iso face format bskf, lskf, bf, lf, rskf, rf, fskf, ff, tpts [([x, y],[x....
     # seem front, seem back
-    print(iso)
+    isoff = iso[7]
+    isobf = iso[2]
+    isoseemf = get_middle(isoff, 0, 1)
+    isoseemf.append(sizearray[9])
+    isoseemf[0] += 22
+    isoseemf[1] += 12
+    isoseemb = get_middle(isobf, 0, 1)
+    isoseemb.append(sizearray[10])
+    isoseemb[0] -= 12
+    isoseemb[1] += 20
 
+    locnsize = frontwidth, frontangle, frontface, fronttop, frontskirt, \
+        sidelength, sideheight, sidetop, sideface, sideangle, \
+        topwidth, toplength, toptop, isoseemf, isoseemb
+
+    return locnsize  # format out [x, y, size]

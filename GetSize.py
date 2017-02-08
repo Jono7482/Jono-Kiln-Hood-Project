@@ -121,7 +121,7 @@ def find_scale(canvasx, canvasy, tpoints, height, offset):
     return scale, lengthdif
 
 def find_iso_scale(canvasx, canvasy, isopoints, height, offset):
-    # get length of longest X, Y, z lines
+    # get length of longest X, Y, Z lines
     xlength = (isopoints[6][3][0] - isopoints[6][0][0]) + offset
     ylength = height + offset
     zlength = (isopoints[1][0][2] - isopoints[1][3][2]) + offset
