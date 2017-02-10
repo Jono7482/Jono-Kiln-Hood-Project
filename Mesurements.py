@@ -84,8 +84,8 @@ def loc_size_output(front, side, top, iso):
     frontwidth.append(sizearray[3])
     frontwidth[1] -= 9
     frontangle = front[1]
-    frontangle.append(sizearray[8])
-    frontangle[0] += 12
+    frontangle.append(str(sizearray[8]))
+    frontangle[0] += 16
     frontangle[1] += 3
     frontface = get_middle(front, 1, 2)
     frontface.append(sizearray[1])
@@ -113,7 +113,7 @@ def loc_size_output(front, side, top, iso):
     sideface[0] -= 35
     sideface[1] += 6
     sideangle = side[4]
-    sideangle.append(sizearray[7])
+    sideangle.append(str(sizearray[7]))
     sideangle[0] -= 25
     sideangle[1] += 3
 

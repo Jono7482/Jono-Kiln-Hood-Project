@@ -9,6 +9,7 @@ wt, lt, ht, top, skirt = 0, 0, 0, 0, 0
 draft = int
 freeview = False
 runonce = True
+created = False
 
 
 class Example(Frame):
@@ -100,8 +101,9 @@ class Example(Frame):
             else:
                 create_free()
 
-        def measvis():
-            if draft == None:
+        def cb():
+            global created
+            if created:
                 if freeview is False:
                     create_home()
                 else:
@@ -150,12 +152,14 @@ class Example(Frame):
     # Display objects on canvas
         def create_home():
             global freeview
+            global created
             freeview = False
             Iso_View.reset_movement()
             canvasheight = canvas.winfo_height()
             canvaswidth = canvas.winfo_width()
             canvas.delete("all")
             draw_home_canvas(canvaswidth, canvasheight)
+            created = True
 
         def create_free():
             global freeview
@@ -211,15 +215,17 @@ class Example(Frame):
                     canvaswidth, canvasheight, isoscale, r, "iso", offset, lengthdif)
                 scaledisopoints.append(shape)
                 canvas.create_polygon(shape, fill="#ccc", outline="black", width=2)
-            checke = var1
-            print(checke)
-            if checke:
+
+            if var1.get():
                 Mesurements.home_measurements()
                 locnsize = Mesurements.loc_size_output(fpoints, spoints, tpoints, scaledisopoints)
                 for each in locnsize:
-                    each[2] = round(each[2], 3)
+                    if isinstance(each[2], str):
+                        each[2] += "°"
+                    else:
+                        each[2] = round(each[2], 3)
                     canvas_id = canvas.create_text(each[0:2])
-                    canvas.itemconfig(canvas_id, text=each[2], fill="#33c", font=("Courier", 9, "bold"))
+                    canvas.itemconfig(canvas_id, text=each[2], fill="#111", font=("Courier", 9))
 
             return
 
@@ -254,7 +260,6 @@ class Example(Frame):
                 canvas.create_polygon(todraw[n], fill="#ccc", outline="black", width=2)
             global runonce
             if runonce:
-                print("run once")
                 runonce = False
                 canvas_id = canvas.create_text(canvaswidth / 2, canvasheight / 8)
                 canvas.itemconfig(canvas_id, font=("Courier", 20), text="Click and drag to rotate!")
@@ -269,9 +274,9 @@ class Example(Frame):
         fbtn.grid(row=12, column=0, sticky=N)
 
         var1 = IntVar()
-        checkbut = Checkbutton(self, text="Measurements", variable=var1, command=measvis(), onvalue=1, offvalue=0)
+        var1.set(1)
+        checkbut = Checkbutton(self, text="Measurements", variable=var1, command=cb, onvalue=1, offvalue=0)
         checkbut.grid(row=11, column=0, sticky=N)
-        print(var1)
 
         dbtn = Button(self, text="Defaults", width=10, command=setdef)
         dbtn.grid(row=12, column=3, sticky=E)
