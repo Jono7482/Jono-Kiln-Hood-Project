@@ -40,14 +40,13 @@ class Example(Frame):
         self.columnconfigure(2, weight=1)
         # for x in range(0, 12): # pad all rows
         #     self.rowconfigure(x, pad=1)
-        self.rowconfigure(10, weight=1)  # Last row of canvas stretches
+        self.rowconfigure(9, weight=1)  # Last row of canvas stretches
         self.rowconfigure(0, pad=8)
-        self.rowconfigure(11, pad=8)
-        self.rowconfigure(12, pad=8)
+
 
         # canvas
         canvas = Canvas(self, background="#fff")
-        canvas.grid(row=1, column=1, columnspan=2, rowspan=10, padx=4, sticky=N+W+E+S)
+        canvas.grid(row=1, column=1, columnspan=2, rowspan=15, padx=4, sticky=N+W+E+S)
 
         start = []
 
@@ -85,6 +84,10 @@ class Example(Frame):
             htext.delete("1.0", END)
             htext.insert("1.0", "24")
             stylecbox.set("Downdraft")
+            if freeview is False:
+                create_home()
+            else:
+                create_free()
 
     # Make random size hoods
         def randsettings():
@@ -268,22 +271,22 @@ class Example(Frame):
         lbl = Label(self, text="Kiln Hoods Calculator", width=20)
         lbl.grid(row=0, column=1, columnspan=2)
         cbtn = Button(self, text="Create", width=10, command=create_home)
-        cbtn.grid(row=10, column=0, sticky=N)
+        cbtn.grid(row=12, column=3, sticky=N)
 
         fbtn = Button(self, text="Free View", width=10, command=create_free)
-        fbtn.grid(row=12, column=0, sticky=N)
+        fbtn.grid(row=13, column=3, sticky=N)
 
         var1 = IntVar()
         var1.set(1)
         checkbut = Checkbutton(self, text="Measurements", variable=var1, command=cb, onvalue=1, offvalue=0)
-        checkbut.grid(row=11, column=0, sticky=N)
+        checkbut.grid(row=15, column=0, sticky=N)
 
         dbtn = Button(self, text="Defaults", width=10, command=setdef)
-        dbtn.grid(row=12, column=3, sticky=E)
+        dbtn.grid(row=14, column=3, sticky=E)
         hbtn = Button(self, text="Random", width=10, command=randsettings)
-        hbtn.grid(row=13, column=0)
+        hbtn.grid(row=15, column=3)
         quit_button = Button(self, text="Quit", width=10, command=self.quit)
-        quit_button.grid(row=13, column=3)
+        quit_button.grid(row=16, column=3)
 
         llbl = Label(self, text="Length:", width=10, background="#aaa")
         llbl.grid(row=1, column=0, sticky=W+S)
@@ -305,7 +308,7 @@ class Example(Frame):
         stylecboxvar = 0
         stylecbox = Combobox(self, width=10, textvariable=stylecboxvar, state="readonly")
         stylecbox['values'] = ('Updraft', 'Downdraft')
-        stylecbox.grid(row=8, column=0)
+        stylecbox.grid(row=8, column=0, sticky=N)
 
         fakelbl = Label(self, text="    ", width=10, background="#aaa")
         fakelbl.grid(row=9, column=0, sticky=W + S)
