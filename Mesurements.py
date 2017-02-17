@@ -74,7 +74,7 @@ def line_length(pointa, pointb):
     return l
 
 
-def loc_size_output(front, side, top, iso):
+def loc_size_output(front, side, top=None, iso=None):
     # sizearray format skirt, fhyp, top, wt, shyp, lt, ht, fbend, sbend, ffseem, bfseem
     sizearray = home_measurements()
 
@@ -119,30 +119,36 @@ def loc_size_output(front, side, top, iso):
 
     # locations top
     # width, length, top
-    topwidth = get_middle(top, 0, 3)
-    topwidth.append(sizearray[3])
-    topwidth[1] -= 9
-    toplength = get_middle(top, 2, 3)
-    toplength.append(sizearray[5])
-    toplength[0] -= 25
-    toplength[1] -= 20
-    toptop = get_middle(top, 4, 7)
-    toptop.append(sizearray[2])
-    toptop[1] += 9
+    if top != None:
+        topwidth = get_middle(top, 0, 3)
+        topwidth.append(sizearray[3])
+        topwidth[1] -= 9
+        toplength = get_middle(top, 2, 3)
+        toplength.append(sizearray[5])
+        toplength[0] -= 25
+        toplength[1] -= 20
+        toptop = get_middle(top, 4, 7)
+        toptop.append(sizearray[2])
+        toptop[1] += 9
+    else:
+        topwidth, toplength, toptop = None, None, None
 
     # locations iso
     # iso face format bskf, lskf, bf, lf, rskf, rf, fskf, ff, tpts [([x, y],[x....
     # seem front, seem back
-    isoff = iso[7]
-    isobf = iso[2]
-    isoseemf = get_middle(isoff, 0, 1)
-    isoseemf.append(sizearray[9])
-    isoseemf[0] += 22
-    isoseemf[1] += 12
-    isoseemb = get_middle(isobf, 0, 1)
-    isoseemb.append(sizearray[10])
-    isoseemb[0] -= 12
-    isoseemb[1] += 20
+    if iso != None:
+        isoff = iso[7]
+        isobf = iso[2]
+        isoseemf = get_middle(isoff, 0, 1)
+        isoseemf.append(sizearray[9])
+        isoseemf[0] += 22
+        isoseemf[1] += 12
+        isoseemb = get_middle(isobf, 0, 1)
+        isoseemb.append(sizearray[10])
+        isoseemb[0] -= 12
+        isoseemb[1] += 20
+    else:
+        isoseemf, isoseemb = None, None
 
     locnsize = frontwidth, frontangle, frontface, fronttop, frontskirt, \
         sidelength, sideheight, sidetop, sideface, sideangle, \

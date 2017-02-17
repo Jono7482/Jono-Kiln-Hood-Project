@@ -140,17 +140,33 @@ class Example(Frame):
             return wt, lt, ht, isfloat
 
     # Get points
-        def get_points():
+        def get_points(view="home"):
             global wt
             global lt
             global ht
+            global skirt
             global draft
-
             fpoints = GetSize.create_points(wt, ht, draft, "Front")
             spoints = GetSize.create_points(lt, ht, draft, "Side")
-            tpoints = GetSize.create_points(wt, lt, draft, "Top")
-            hpoints = GetSize.create_points(wt, lt, draft, "Hole")
-            return fpoints, spoints, tpoints, hpoints
+            if view == "home":
+                tpoints = GetSize.create_points(wt, lt, draft, "Top")
+                hpoints = GetSize.create_points(wt, lt, draft, "Hole")
+                return fpoints, spoints, tpoints, hpoints
+            elif view == "flat":
+                locnsize = Mesurements.loc_size_output(fpoints, spoints)
+                frontht = locnsize[8][2] + skirt
+                if draft == "Updraft":
+                    backht = locnsize[8][2]
+                else:
+                    backht = ht
+                sideht = locnsize[2][2] + skirt
+                frontpoints = GetSize.create_points(wt, frontht, draft, "Front")
+                backpoints = GetSize.create_points(wt, backht, draft, "Front")
+                leftpoints = GetSize.create_points(lt, sideht, draft, "Side")
+                rightpoints = GetSize.create_points(lt, sideht, draft, "Side")
+                return frontpoints, backpoints, leftpoints, rightpoints
+            else:
+                print("Error view not flat or home")
 
     # Display objects on canvas
         def create_home():
@@ -158,10 +174,8 @@ class Example(Frame):
             global created
             freeview = False
             Iso_View.reset_movement()
-            canvasheight = canvas.winfo_height()
-            canvaswidth = canvas.winfo_width()
             canvas.delete("all")
-            draw_home_canvas(canvaswidth, canvasheight)
+            draw_home_canvas()
             created = True
 
         def create_free():
@@ -171,11 +185,21 @@ class Example(Frame):
             Iso_View.reset_movement()
             draw_iso_canvas(defmovement)
 
-        def draw_home_canvas(canvaswidth, canvasheight):
+        def create_flat():
+            global freeview
+            freeview = False
+            Iso_View.reset_movement()
+            canvas.delete("all")
+            draw_flat_canvas()
+
+
+        def draw_home_canvas():
             global draft
             global wt
             global lt
             global ht
+            canvasheight = canvas.winfo_height()
+            canvaswidth = canvas.winfo_width()
             draft = stylecbox.get()
             wt, lt, ht, isfloat = get_user_inputs()
             if not isfloat:
@@ -183,8 +207,9 @@ class Example(Frame):
             fpoints, spoints, tpoints, hpoints = get_points()
 
             # Scale points to canvas
-            offset = 15
+            offset = 20
             scale, lengthdif = GetSize.find_scale(canvaswidth, canvasheight, tpoints, ht, offset)
+
 
             frontshape = GetSize.locate_points_canvas(
                 canvaswidth, canvasheight, scale, fpoints, "front", offset, lengthdif)
@@ -207,7 +232,7 @@ class Example(Frame):
             canvas.create_oval(holeshape, width=2, fill="#fff")
 
             # Iso View
-            isoscale = scale * .85  # temporary fix for oversized iso view
+            isoscale = scale * .75  # temporary fix for oversized iso view
             isopoints = Iso_View.iso_points()
             scaledisopoints = []
 
@@ -220,7 +245,6 @@ class Example(Frame):
                 canvas.create_polygon(shape, fill="#ccc", outline="black", width=2)
 
             if var1.get():
-                Mesurements.home_measurements()
                 locnsize = Mesurements.loc_size_output(fpoints, spoints, tpoints, scaledisopoints)
                 for each in locnsize:
                     if isinstance(each[2], str):
@@ -231,6 +255,41 @@ class Example(Frame):
                     canvas.itemconfig(canvas_id, text=each[2], fill="#111", font=("Courier", 9))
 
             return
+
+        def draw_flat_canvas(face="Left"):
+            global draft
+            global wt
+            global lt
+            global ht
+            canvasheight = canvas.winfo_height()
+            canvaswidth = canvas.winfo_width()
+            draft = stylecbox.get()
+            wt, lt, ht, isfloat = get_user_inputs()
+            if not isfloat:
+                return
+            frontpoints, backpoints, leftpoints, rightpoints = get_points("flat")
+            points = []
+            if face == "Front":
+                points = frontpoints
+            elif face == "Back":
+                points = backpoints
+            elif face == "Left":
+                points = leftpoints
+            elif face == "Right":
+                points = rightpoints
+            else:
+                print("Error not front back left or right")
+            offset = 10
+            xmax = points[5][0] - points[0][0]
+            ymax = points[2][1] - points[0][1]
+            if xmax >= ymax:
+                scale = canvaswidth / (xmax + offset)
+            else:
+                scale = canvasheight / (ymax + offset)
+
+            shape = GetSize.locate_points_canvas(
+                canvaswidth, canvasheight, scale, points, "Flat", offset)
+            canvas.create_polygon(shape, fill="#ccc", outline="black", width=2)
 
         def draw_iso_canvas(movement):
             canvas.delete("all")
@@ -272,7 +331,8 @@ class Example(Frame):
         lbl.grid(row=0, column=1, columnspan=2)
         cbtn = Button(self, text="Create", width=10, command=create_home)
         cbtn.grid(row=12, column=3, sticky=N)
-
+        fbtn = Button(self, text="Flat", width=10, command=create_flat)
+        fbtn.grid(row=11, column=3, sticky=N)
         fbtn = Button(self, text="Free View", width=10, command=create_free)
         fbtn.grid(row=13, column=3, sticky=N)
 
