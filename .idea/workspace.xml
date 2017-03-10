@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2c78b232-f1be-4bca-8705-c1fec8a86949" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GetSize.py" afterPath="$PROJECT_DIR$/GetSize.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Gui.py" afterPath="$PROJECT_DIR$/Gui.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Mesurements.py" afterPath="$PROJECT_DIR$/Mesurements.py" />
     </list>
@@ -27,7 +26,7 @@
     <SUITE FILE_PATH="coverage/Jono-Kiln-Hood-Project$Rotation_Testing.coverage" NAME="Rotation_Testing Coverage Results" MODIFIED="1485885015520" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Jono-Kiln-Hood-Project$moving_sphere.coverage" NAME="moving_sphere Coverage Results" MODIFIED="1485379497961" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Jono-Kiln-Hood-Project$Test_Rotation.coverage" NAME="Test_Rotation Coverage Results" MODIFIED="1485299403218" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Jono-Kiln-Hood-Project$Main.coverage" NAME="Main Coverage Results" MODIFIED="1487372860201" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Jono-Kiln-Hood-Project$Main.coverage" NAME="Main Coverage Results" MODIFIED="1489166552902" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -45,11 +44,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Gui.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Gui.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Gui.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="172" column="27" lean-forward="true" selection-start-line="172" selection-start-column="27" selection-end-line="172" selection-end-column="27" />
+            <state relative-caret-position="-54">
+              <caret line="306" column="60" lean-forward="false" selection-start-line="306" selection-start-column="60" selection-end-line="306" selection-end-column="60" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -60,7 +59,7 @@
       <file leaf-file-name="Iso_View.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Iso_View.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2816">
+            <state relative-caret-position="1958">
               <caret line="128" column="41" lean-forward="false" selection-start-line="128" selection-start-column="41" selection-end-line="128" selection-end-column="41" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
@@ -72,18 +71,18 @@
       <file leaf-file-name="GetSize.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GetSize.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2014">
-              <caret line="179" column="11" lean-forward="false" selection-start-line="179" selection-start-column="11" selection-end-line="179" selection-end-column="11" />
+            <state relative-caret-position="166">
+              <caret line="128" column="40" lean-forward="false" selection-start-line="128" selection-start-column="40" selection-end-line="128" selection-end-column="40" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Mesurements.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Mesurements.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Mesurements.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3234">
-              <caret line="147" column="25" lean-forward="false" selection-start-line="147" selection-start-column="25" selection-end-line="147" selection-end-column="25" />
+            <state relative-caret-position="298">
+              <caret line="236" column="24" lean-forward="false" selection-start-line="236" selection-start-column="24" selection-end-line="236" selection-end-column="24" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -120,9 +119,9 @@
         <option value="$PROJECT_DIR$/Iso_View.py" />
         <option value="$PROJECT_DIR$/Main.py" />
         <option value="$PROJECT_DIR$/../widget-tour-py3/canvasitems.py" />
-        <option value="$PROJECT_DIR$/Mesurements.py" />
         <option value="$PROJECT_DIR$/GetSize.py" />
         <option value="$PROJECT_DIR$/Gui.py" />
+        <option value="$PROJECT_DIR$/Mesurements.py" />
       </list>
     </option>
   </component>
@@ -153,6 +152,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -167,8 +168,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -542,7 +541,14 @@
       <option name="project" value="LOCAL" />
       <updated>1487258469245</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Flat view somewhat implemented">
+      <created>1487374115287</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1487374115287</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -558,6 +564,7 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32982457" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Concurrent Activities Diagram" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32982457" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -584,13 +591,60 @@
     <MESSAGE value="adding new system for home view measurements &#10;next step getting iso points for measurement locations" />
     <MESSAGE value="new measurements in&#10;working on measurement visibility" />
     <MESSAGE value=" measurement visibility working&#10; and added deg symbol" />
-    <option name="LAST_COMMIT_MESSAGE" value=" measurement visibility working&#10; and added deg symbol" />
+    <MESSAGE value="Flat view somewhat implemented" />
+    <option name="LAST_COMMIT_MESSAGE" value="Flat view somewhat implemented" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/Main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Gui.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Iso_View.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2772">
+          <caret line="128" column="41" lean-forward="false" selection-start-line="128" selection-start-column="41" selection-end-line="128" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GetSize.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3938">
+          <caret line="179" column="11" lean-forward="false" selection-start-line="179" selection-start-column="11" selection-end-line="179" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mesurements.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3190">
+          <caret line="147" column="25" lean-forward="false" selection-start-line="147" selection-start-column="25" selection-end-line="147" selection-end-column="25" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="176">
@@ -697,14 +751,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../widget-tour-py3/arrowhead.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2310">
@@ -747,27 +793,25 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GetSize.py">
+    <entry file="file://$PROJECT_DIR$/Main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2014">
-          <caret line="179" column="11" lean-forward="false" selection-start-line="179" selection-start-column="11" selection-end-line="179" selection-end-column="11" />
+        <state relative-caret-position="176">
+          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Mesurements.py">
+    <entry file="file://$PROJECT_DIR$/GetSize.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3234">
-          <caret line="147" column="25" lean-forward="false" selection-start-line="147" selection-start-column="25" selection-end-line="147" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="166">
+          <caret line="128" column="40" lean-forward="false" selection-start-line="128" selection-start-column="40" selection-end-line="128" selection-end-column="40" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Iso_View.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2816">
+        <state relative-caret-position="1958">
           <caret line="128" column="41" lean-forward="false" selection-start-line="128" selection-start-column="41" selection-end-line="128" selection-end-column="41" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
@@ -777,10 +821,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Gui.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="172" column="27" lean-forward="true" selection-start-line="172" selection-start-column="27" selection-end-line="172" selection-end-column="27" />
+        <state relative-caret-position="-54">
+          <caret line="306" column="60" lean-forward="false" selection-start-line="306" selection-start-column="60" selection-end-line="306" selection-end-column="60" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Mesurements.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="298">
+          <caret line="236" column="24" lean-forward="false" selection-start-line="236" selection-start-column="24" selection-end-line="236" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>

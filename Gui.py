@@ -7,9 +7,9 @@ import Mesurements
 import Iso_View
 wt, lt, ht, top, skirt = 0, 0, 0, 0, 0
 draft = int
-freeview = False
+cview = "Default"
 runonce = True
-created = False
+#created = False
 
 
 class Example(Frame):
@@ -67,7 +67,7 @@ class Example(Frame):
             xy = mouseloc(event)
             movement = (start[0] - xy[0]) / 15.0000, (start[1] - xy[1]) / 15.0000
             start = xy
-            if freeview is True:
+            if cview is "Free":
                 draw_iso_canvas(movement)
             else:
                 return
@@ -84,10 +84,7 @@ class Example(Frame):
             htext.delete("1.0", END)
             htext.insert("1.0", "24")
             stylecbox.set("Downdraft")
-            if freeview is False:
-                create_home()
-            else:
-                create_free()
+            create(cview)
 
     # Make random size hoods
         def randsettings():
@@ -99,20 +96,22 @@ class Example(Frame):
             htext.insert("1.0", random.randint(20, 60))
             randdraft = "Downdraft", "Updraft"
             stylecbox.set(randdraft[random.randint(0, 1)])
-            if freeview is False:
-                create_home()
-            else:
-                create_free()
+            create(cview)
 
-        def cb():
-            global created
-            if created:
-                if freeview is False:
-                    create_home()
-                else:
-                    create_free()
+
+        def create(view="Home"):
+            global cview
+            cview = view
+            if cview is "Home" or cview is "Default":
+                create_home()
+            elif cview is "Free":
+                create_free()
+            elif cview is "Flat":
+                create_flat()
             else:
+                print("error view not defined")
                 return
+
 
     # Create floats from inputs
         def get_user_inputs():
@@ -170,27 +169,26 @@ class Example(Frame):
 
     # Display objects on canvas
         def create_home():
-            global freeview
-            global created
-            freeview = False
+            global cview
+            cview = "Home"
             Iso_View.reset_movement()
             canvas.delete("all")
             draw_home_canvas()
-            created = True
+
 
         def create_free():
-            global freeview
-            freeview = True
+            global cview
+            cview = "Free"
             defmovement = 0, 0
             Iso_View.reset_movement()
             draw_iso_canvas(defmovement)
 
-        def create_flat():
-            global freeview
-            freeview = False
+        def create_flat(face="Front"):
+            global cview
+            cview = "Flat"
             Iso_View.reset_movement()
             canvas.delete("all")
-            draw_flat_canvas()
+            draw_flat_canvas(face)
 
 
         def draw_home_canvas():
@@ -256,7 +254,7 @@ class Example(Frame):
 
             return
 
-        def draw_flat_canvas(face="Left"):
+        def draw_flat_canvas(face):
             global draft
             global wt
             global lt
@@ -277,19 +275,57 @@ class Example(Frame):
                 points = leftpoints
             elif face == "Right":
                 points = rightpoints
+
             else:
                 print("Error not front back left or right")
             offset = 10
+            windowratiox = canvasheight/canvaswidth
+            windowratioy = canvaswidth/canvasheight
             xmax = points[5][0] - points[0][0]
             ymax = points[2][1] - points[0][1]
+            xmax *= windowratiox
+            ymax *= windowratioy
+
             if xmax >= ymax:
-                scale = canvaswidth / (xmax + offset)
+                scale = canvaswidth * .90 / (xmax + offset)
             else:
-                scale = canvasheight / (ymax + offset)
+                scale = (canvasheight * .95) / (ymax + offset)
+
+            if face == "Right":
+                for n in range(len(points)):
+                    points[n][0] = (points[n][0] - lt) * -1
 
             shape = GetSize.locate_points_canvas(
                 canvaswidth, canvasheight, scale, points, "Flat", offset)
             canvas.create_polygon(shape, fill="#ccc", outline="black", width=2)
+
+            canvas_id = canvas.create_text(canvaswidth/2, canvasheight)
+            canvas.itemconfig(canvas_id, text=face, fill="#111", anchor=S, font=("Courier", 16))
+
+            print(Mesurements.loc_size_output_flat(points, face))
+            if var1.get():
+                locnsize = Mesurements.loc_size_output_flat(points, face)
+                for each in locnsize:
+                    if isinstance(each[2], str):
+                        each[2] += "°"
+                    else:
+                        each[2] = round(each[2], 3)
+                    canvas_id = canvas.create_text(each[0:2])
+                    canvas.itemconfig(canvas_id, text=each[2], fill="#111", font=("Courier", 9))
+
+
+            buttonLeft = Button(self, text="Left", command=lambda: create_flat("Left"))
+            buttonLeft.configure(width=8, pady=0)
+            canvas.create_window(10, 10, anchor=NW, window=buttonLeft)
+            buttonFront = Button(self, text="Front", command=lambda: create_flat("Front"))
+            buttonFront.configure(width=8)
+            canvas.create_window(110, 10, anchor=NW, window=buttonFront)
+            buttonRight = Button(self, text="Right", command=lambda: create_flat("Right"))
+            buttonRight.configure(width=8)
+            canvas.create_window(210, 10, anchor=NW, window=buttonRight)
+            buttonBack = Button(self, text="Back", command=lambda: create_flat("Back"))
+            buttonBack.configure(width=8)
+            canvas.create_window(310, 10, anchor=NW, window=buttonBack)
 
         def draw_iso_canvas(movement):
             canvas.delete("all")
@@ -329,16 +365,10 @@ class Example(Frame):
     # Frame objects
         lbl = Label(self, text="Kiln Hoods Calculator", width=20)
         lbl.grid(row=0, column=1, columnspan=2)
-        cbtn = Button(self, text="Create", width=10, command=create_home)
-        cbtn.grid(row=12, column=3, sticky=N)
-        fbtn = Button(self, text="Flat", width=10, command=create_flat)
-        fbtn.grid(row=11, column=3, sticky=N)
-        fbtn = Button(self, text="Free View", width=10, command=create_free)
-        fbtn.grid(row=13, column=3, sticky=N)
 
         var1 = IntVar()
         var1.set(1)
-        checkbut = Checkbutton(self, text="Measurements", variable=var1, command=cb, onvalue=1, offvalue=0)
+        checkbut = Checkbutton(self, text="Measurements", variable=var1, command=lambda: create(), onvalue=1, offvalue=0)
         checkbut.grid(row=15, column=0, sticky=N)
 
         dbtn = Button(self, text="Defaults", width=10, command=setdef)
@@ -370,6 +400,13 @@ class Example(Frame):
         stylecbox['values'] = ('Updraft', 'Downdraft')
         stylecbox.grid(row=8, column=0, sticky=N)
 
+        cbtn = Button(self, text="Create", width=10, command=create_home)
+        cbtn.grid(row=11, column=3, sticky=N)
+        flbtn = Button(self, text="Flat", width=10, command=create_flat)
+        flbtn.grid(row=12, column=3, sticky=N)
+        fbtn = Button(self, text="Free View", width=10, command=create_free)
+        fbtn.grid(row=13, column=3, sticky=N)
+
         fakelbl = Label(self, text="    ", width=10, background="#aaa")
         fakelbl.grid(row=9, column=0, sticky=W + S)
 
@@ -384,3 +421,4 @@ def main():
     root = Tk()
     Example(root)
     root.mainloop()
+

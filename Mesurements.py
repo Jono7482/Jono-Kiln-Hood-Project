@@ -155,3 +155,97 @@ def loc_size_output(front, side, top=None, iso=None):
         topwidth, toplength, toptop, isoseemf, isoseemb
 
     return locnsize  # format out [x, y, size]
+
+def loc_size_output_flat(points, face):
+    # sizearray format skirt, fhyp, top, wt, shyp, lt, ht, fbend, sbend, ffseem, bfseem
+    sizearray = home_measurements()
+
+    if face is "Front":
+        # locations front
+        # width, hyp, top, skirt
+        frontwidth = get_middle(points, 0, 5)
+        frontwidth.append(sizearray[3])
+        frontwidth[1] -= 9
+        fronthyp = get_middle(points, 1, 2)
+        fronthyp.append(sizearray[9])
+        fronthyp[0] += 29
+        fronttop = get_middle(points, 2, 3)
+        fronttop.append(sizearray[2])
+        fronttop[1] += 9
+        frontskirt = get_middle(points, 4, 5)
+        frontskirt.append(sizearray[0])
+        frontskirt[0] -= 12
+        frontheighttemp = get_middle(points, 2, 3), get_middle(points, 0, 5)
+        frontheight = get_middle(frontheighttemp, 0, 1)
+        frontheight.append(sizearray[4] + sizearray[0])
+        frontheight[0] += 1
+
+        locnsize = frontwidth, fronthyp, fronttop, frontskirt, frontheight
+
+    if face is "Back":
+        # locations front
+        # width, hyp, top, skirt
+        backwidth = get_middle(points, 0, 5)
+        backwidth.append(sizearray[3])
+        backwidth[1] -= 9
+        backhyp = get_middle(points, 1, 2)
+        backhyp.append(sizearray[10])
+        backhyp[0] += 29
+        backtop = get_middle(points, 2, 3)
+        backtop.append(sizearray[2])
+        backtop[1] += 9
+        backskirt = get_middle(points, 4, 5)
+        backskirt.append(sizearray[0])
+        backskirt[0] -= 12
+        backheighttemp = get_middle(points, 2, 3), get_middle(points, 0, 5)
+        backheight = get_middle(backheighttemp, 0, 1)
+        backheight.append(sizearray[1] + sizearray[0])
+        backheight[0] += 1
+
+        locnsize = backwidth, backhyp, backtop, backskirt, backheight
+
+    if face is "Left":
+        # locations side
+        # length, height, top, front face, skirt
+        leftlength = get_middle(points, 0, 5)
+        leftlength.append(sizearray[5])
+        leftlength[1] -= 9
+        leftheight = get_middle(points, 0, 2)
+        leftheight.append(sizearray[10] + sizearray[0])
+        leftheight[0] += 29
+        lefttop = get_middle(points, 2, 3)
+        lefttop.append(sizearray[2])
+        lefttop[1] += 9
+        leftface = get_middle(points, 3, 4)
+        leftface.append(sizearray[9])
+        leftface[0] -= 35
+        leftface[1] += 6
+        leftskirt = get_middle(points, 4, 5)
+        leftskirt.append(sizearray[0])
+        leftskirt[0] -= 12
+
+        locnsize = leftlength, leftheight, lefttop, leftface, leftskirt
+
+    if face is "Right":
+        # locations side
+        # length, height, top, front face, skirt
+        rightlength = get_middle(points, 0, 5)
+        rightlength.append(sizearray[5])
+        rightlength[1] -= 9
+        rightheight = get_middle(points, 0, 2)
+        rightheight.append(sizearray[10] + sizearray[0])
+        rightheight[0] -= 28
+        righttop = get_middle(points, 2, 3)
+        righttop.append(sizearray[2])
+        righttop[1] += 9
+        rightface = get_middle(points, 3, 4)
+        rightface.append(sizearray[9])
+        rightface[0] += 29
+        rightface[1] += 6
+        rightskirt = get_middle(points, 4, 5)
+        rightskirt.append(sizearray[0])
+        rightskirt[0] -= 12
+
+        locnsize = rightlength, rightheight, righttop, rightface, rightskirt
+
+    return locnsize
