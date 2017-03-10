@@ -8,8 +8,9 @@ import Iso_View
 wt, lt, ht, top, skirt = 0, 0, 0, 0, 0
 draft = int
 cview = "Default"
+flatface = "Left"
 runonce = True
-#created = False
+
 
 
 class Example(Frame):
@@ -36,17 +37,19 @@ class Example(Frame):
         # self.parent.attributes("-fullscreen", True) #fullscreen
 
         # Setting Grid
-        self.columnconfigure(1, weight=1)  # column 1 and 2 stretch for canvas
-        self.columnconfigure(2, weight=1)
+        self.columnconfigure(3, weight=1)  # column 3 and 4 stretch for canvas
+        self.columnconfigure(4, weight=1)
+        self.columnconfigure(1, minsize=50)
+        self.columnconfigure(2, minsize=50)
         # for x in range(0, 12): # pad all rows
         #     self.rowconfigure(x, pad=1)
-        self.rowconfigure(9, weight=1)  # Last row of canvas stretches
+        self.rowconfigure(9, weight=1)  # row 9 of canvas stretches
         self.rowconfigure(0, pad=8)
 
 
         # canvas
         canvas = Canvas(self, background="#fff")
-        canvas.grid(row=1, column=1, columnspan=2, rowspan=15, padx=4, sticky=N+W+E+S)
+        canvas.grid(row=1, column=1, columnspan=4, rowspan=15, padx=4, sticky=N+W+E+S)
 
         start = []
 
@@ -84,7 +87,7 @@ class Example(Frame):
             htext.delete("1.0", END)
             htext.insert("1.0", "24")
             stylecbox.set("Downdraft")
-            create(cview)
+            create()
 
     # Make random size hoods
         def randsettings():
@@ -96,18 +99,21 @@ class Example(Frame):
             htext.insert("1.0", random.randint(20, 60))
             randdraft = "Downdraft", "Updraft"
             stylecbox.set(randdraft[random.randint(0, 1)])
-            create(cview)
+            create()
 
 
-        def create(view="Home"):
+        def create():
             global cview
-            cview = view
+            if cview is "Default":
+                cview = "Home"
             if cview is "Home" or cview is "Default":
                 create_home()
             elif cview is "Free":
                 create_free()
             elif cview is "Flat":
                 create_flat()
+            elif cview is "Stat":
+                create_stat()
             else:
                 print("error view not defined")
                 return
@@ -183,13 +189,23 @@ class Example(Frame):
             Iso_View.reset_movement()
             draw_iso_canvas(defmovement)
 
-        def create_flat(face="Front"):
+        def create_flat(face=None):
             global cview
+            global flatface
+            if face is None:
+                face = flatface
+            else:
+                flatface = face
             cview = "Flat"
             Iso_View.reset_movement()
             canvas.delete("all")
             draw_flat_canvas(face)
 
+        def create_stat():
+            global cview
+            cview = "Stat"
+            canvas.delete("all")
+            draw_stat_canvas()
 
         def draw_home_canvas():
             global draft
@@ -299,15 +315,19 @@ class Example(Frame):
                 canvaswidth, canvasheight, scale, points, "Flat", offset)
             canvas.create_polygon(shape, fill="#ccc", outline="black", width=2)
 
+            if (draft != 'Downdraft') or (face != "Back"):
+                print("draft = ", draft, " Face = ", face)
+                print("not downdraft and not back")
+                canvas.create_line(points[1], points[4], width=1, dash=(10,10))
+
             canvas_id = canvas.create_text(canvaswidth/2, canvasheight)
             canvas.itemconfig(canvas_id, text=face, fill="#111", anchor=S, font=("Courier", 16))
 
-            print(Mesurements.loc_size_output_flat(points, face))
             if var1.get():
                 locnsize = Mesurements.loc_size_output_flat(points, face)
                 for each in locnsize:
                     if isinstance(each[2], str):
-                        each[2] += "°"
+                        each[2] = "Bend " + each[2] + "° Down"
                     else:
                         each[2] = round(each[2], 3)
                     canvas_id = canvas.create_text(each[0:2])
@@ -362,9 +382,87 @@ class Example(Frame):
                 canvas_id = canvas.create_text(canvaswidth / 2, canvasheight / 8)
                 canvas.itemconfig(canvas_id, font=("Courier", 20), text="Click and drag to rotate!")
 
+
+        def draw_stat_canvas():
+            global draft
+            global wt
+            global lt
+            global ht
+            draft = stylecbox.get()
+            wt, lt, ht, isfloat = get_user_inputs()
+            if not isfloat:
+                return
+
+            def stat_text(varlabel, column, row, text):
+                rowspace = 20
+                row = row * rowspace + 30
+                if column == 1:
+                    loc = E
+                    text += " "
+                    column += 130
+                else:
+                    loc = W
+                    column += 130
+
+                varlabel = canvas.create_text(column, row)
+                canvas.itemconfig(varlabel, text=text, width=130, anchor=loc, font=("Courier", 9))
+
+            material = "Stainless"
+            guage = 16
+            area = 22000
+            weight = 100
+            pplb = "$1.00"
+            cost = "$200.00"
+
+            stat_text("lbmod", 1, 1, "Model:")
+            stat_text("lbmod1", 2, 1, "LE-200-12")
+            stat_text("lblt", 1, 2, "Length:")
+            stat_text("lblt1", 2, 2, lt)
+            stat_text("lbwt", 1, 3, "Width:")
+            stat_text("lbwt1", 2, 3, wt)
+            stat_text("lbht", 1, 4, "Height:")
+            stat_text("lbht1", 2, 4, ht)
+            stat_text("lbdraft", 1, 5, "Draft:")
+            stat_text("lbdraft1", 2, 5, draft)
+            stat_text("lbmat", 1, 6, "Material:")
+            stat_text("lbmat1", 2, 6, material)
+            stat_text("lbgua", 1, 7, "Guage:")
+            stat_text("lbgua1", 2, 7, guage)
+            stat_text("lbarea", 1, 8, "Area:")
+            stat_text("lbarea1", 2, 8, area)
+            stat_text("lbweight", 1, 9, "Weight:")
+            stat_text("lbweight", 2, 9, weight)
+            stat_text("lbpplb", 1, 10, "Price per Lb:")
+            stat_text("lbpplb1", 2, 10, pplb)
+            stat_text("lbcost", 1, 11, "Cost:")
+            stat_text("lbcost1", 2, 11, cost)
+
+            # iso View
+            canvasheight = canvas.winfo_height()
+            canvaswidth = canvas.winfo_width()
+            fpoints, spoints, tpoints, hpoints = get_points()
+
+            # Scale points to canvas
+            offset = 1
+            scale, lengthdif = GetSize.find_scale(canvaswidth, canvasheight, tpoints, ht, offset)
+            isoscale = scale * 1 # temporary fix for oversized iso view
+            isopoints = Iso_View.iso_points()
+            scaledisopoints = []
+
+            movement = 0, 0
+            for n in range(len(isopoints)):
+                r, zdepth = Iso_View.rotate_face(isopoints[n], movement)
+                shape = GetSize.locate_points_canvas(
+                    canvaswidth, canvasheight, isoscale, r, "iso", offset, lengthdif)
+                scaledisopoints.append(shape)
+                canvas.create_polygon(shape, fill="#ccc", outline="black", width=2)
+
+
+
+
     # Frame objects
         lbl = Label(self, text="Kiln Hoods Calculator", width=20)
-        lbl.grid(row=0, column=1, columnspan=2)
+        lbl.grid(row=0, column=1, columnspan=4)
 
         var1 = IntVar()
         var1.set(1)
@@ -372,11 +470,11 @@ class Example(Frame):
         checkbut.grid(row=15, column=0, sticky=N)
 
         dbtn = Button(self, text="Defaults", width=10, command=setdef)
-        dbtn.grid(row=14, column=3, sticky=E)
+        dbtn.grid(row=14, column=5, sticky=E)
         hbtn = Button(self, text="Random", width=10, command=randsettings)
-        hbtn.grid(row=15, column=3)
+        hbtn.grid(row=15, column=5)
         quit_button = Button(self, text="Quit", width=10, command=self.quit)
-        quit_button.grid(row=16, column=3)
+        quit_button.grid(row=16, column=5)
 
         llbl = Label(self, text="Length:", width=10, background="#aaa")
         llbl.grid(row=1, column=0, sticky=W+S)
@@ -401,11 +499,13 @@ class Example(Frame):
         stylecbox.grid(row=8, column=0, sticky=N)
 
         cbtn = Button(self, text="Create", width=10, command=create_home)
-        cbtn.grid(row=11, column=3, sticky=N)
+        cbtn.grid(row=11, column=5, sticky=N)
         flbtn = Button(self, text="Flat", width=10, command=create_flat)
-        flbtn.grid(row=12, column=3, sticky=N)
+        flbtn.grid(row=12, column=5, sticky=N)
         fbtn = Button(self, text="Free View", width=10, command=create_free)
-        fbtn.grid(row=13, column=3, sticky=N)
+        fbtn.grid(row=13, column=5, sticky=N)
+        statbtn = Button(self, text="Stats", width=10, command=create_stat)
+        statbtn.grid(row=10, column=5, sticky=N)
 
         fakelbl = Label(self, text="    ", width=10, background="#aaa")
         fakelbl.grid(row=9, column=0, sticky=W + S)

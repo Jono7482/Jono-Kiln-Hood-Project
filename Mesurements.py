@@ -179,8 +179,11 @@ def loc_size_output_flat(points, face):
         frontheight = get_middle(frontheighttemp, 0, 1)
         frontheight.append(sizearray[4] + sizearray[0])
         frontheight[0] += 1
+        frontbend = get_middle(points, 1, 4)
+        frontbend.append(str(sizearray[7]))
+        frontbend[1] -= 9
 
-        locnsize = frontwidth, fronthyp, fronttop, frontskirt, frontheight
+        locnsize = frontwidth, fronthyp, fronttop, frontskirt, frontheight, frontbend
 
     if face is "Back":
         # locations front
@@ -201,8 +204,11 @@ def loc_size_output_flat(points, face):
         backheight = get_middle(backheighttemp, 0, 1)
         backheight.append(sizearray[1] + sizearray[0])
         backheight[0] += 1
+        backbend = get_middle(points, 1, 4)
+        backbend.append(str(sizearray[7]))
+        backbend[1] -= 9
 
-        locnsize = backwidth, backhyp, backtop, backskirt, backheight
+        locnsize = backwidth, backhyp, backtop, backskirt, backheight, backbend
 
     if face is "Left":
         # locations side
@@ -223,8 +229,11 @@ def loc_size_output_flat(points, face):
         leftskirt = get_middle(points, 4, 5)
         leftskirt.append(sizearray[0])
         leftskirt[0] -= 12
+        leftbend = get_middle(points, 1, 4)
+        leftbend.append(str(sizearray[8]))
+        leftbend[1] -= 9
 
-        locnsize = leftlength, leftheight, lefttop, leftface, leftskirt
+        locnsize = leftlength, leftheight, lefttop, leftface, leftskirt, leftbend
 
     if face is "Right":
         # locations side
@@ -245,7 +254,10 @@ def loc_size_output_flat(points, face):
         rightskirt = get_middle(points, 4, 5)
         rightskirt.append(sizearray[0])
         rightskirt[0] -= 12
+        rightbend = get_middle(points, 1, 4)
+        rightbend.append(str(sizearray[8]))
+        rightbend[1] -= 9
 
-        locnsize = rightlength, rightheight, righttop, rightface, rightskirt
+        locnsize = rightlength, rightheight, righttop, rightface, rightskirt, rightbend
 
     return locnsize
