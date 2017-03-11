@@ -43,13 +43,13 @@ class Example(Frame):
         self.columnconfigure(2, minsize=50)
         # for x in range(0, 12): # pad all rows
         #     self.rowconfigure(x, pad=1)
-        self.rowconfigure(9, weight=1)  # row 9 of canvas stretches
+        self.rowconfigure(11, weight=1)  # row 11 of canvas stretches
         self.rowconfigure(0, pad=8)
 
 
         # canvas
         canvas = Canvas(self, background="#fff")
-        canvas.grid(row=1, column=1, columnspan=4, rowspan=15, padx=4, sticky=N+W+E+S)
+        canvas.grid(row=1, column=1, columnspan=4, rowspan=17, padx=4, sticky=N+W+E+S)
 
         start = []
 
@@ -99,6 +99,72 @@ class Example(Frame):
             htext.insert("1.0", random.randint(20, 60))
             randdraft = "Downdraft", "Updraft"
             stylecbox.set(randdraft[random.randint(0, 1)])
+            create()
+
+        # Make random size hoods
+        def modelsaves(index):
+            ud4 = 45, 44, 24
+            dd4 = 45, 52.5, 24
+            ud9 = 52, 51, 24
+            dd9 = 52, 60.5, 24
+            ud12 = 54, 52, 24
+            dd12 = 54, 61.5, 24
+            ud18 = 57.5, 56, 24
+            dd18 = 57.5, 66.5, 24
+            ud24 = 62.5, 61.5, 24
+            dd24 = 62.5, 72, 24
+            ud40 = 67.5, 65, 24
+            dd40 = 67.5, 75.5, 24
+            saves = ud4, dd4, ud9, dd9, ud12, dd12, ud18, dd18, ud24, dd24, ud40, dd40
+            return saves[index]
+
+        def setmodel():
+            model = modelcbox.get()
+            draft = stylecbox.get()
+
+            if model == 'Custom' or model == '':
+                return
+
+            if draft == "Updraft" or draft == "":
+                stylecbox.set("Updraft")
+                if model == 'LE-200-4':
+                    dims = modelsaves(0)
+                elif model == 'LE-200-9':
+                    dims = modelsaves(2)
+                elif model == 'LE-200-12':
+                    dims = modelsaves(4)
+                elif model == 'LE-200-18':
+                    dims = modelsaves(6)
+                elif model == 'LE-200-24':
+                    dims = modelsaves(8)
+                elif model == 'LE-200-40':
+                    dims = modelsaves(10)
+                else:
+                    print("Error not correct updraft model")
+            elif draft == "Downdraft":
+                if model == 'LE-200-4':
+                    dims = modelsaves(1)
+                elif model == 'LE-200-9':
+                    dims = modelsaves(3)
+                elif model == 'LE-200-12':
+                    dims = modelsaves(5)
+                elif model == 'LE-200-18':
+                    dims = modelsaves(7)
+                elif model == 'LE-200-24':
+                    dims = modelsaves(9)
+                elif model == 'LE-200-40':
+                    dims = modelsaves(11)
+                else:
+                    print("Error not correct Downdraft model")
+            else:
+                print("Not Correct draft")
+
+            ltext.delete("1.0", END)
+            ltext.insert("1.0", dims[1])
+            wtext.delete("1.0", END)
+            wtext.insert("1.0", dims[0])
+            htext.delete("1.0", END)
+            htext.insert("1.0", dims[2])
             create()
 
 
@@ -389,6 +455,9 @@ class Example(Frame):
             global lt
             global ht
             draft = stylecbox.get()
+            model = modelcbox.get()
+            if modelcbox.get() == '':
+                model = "Custom"
             wt, lt, ht, isfloat = get_user_inputs()
             if not isfloat:
                 return
@@ -415,7 +484,7 @@ class Example(Frame):
             cost = "$200.00"
 
             stat_text("lbmod", 1, 1, "Model:")
-            stat_text("lbmod1", 2, 1, "LE-200-12")
+            stat_text("lbmod1", 2, 1, model)
             stat_text("lblt", 1, 2, "Length:")
             stat_text("lblt1", 2, 2, lt)
             stat_text("lbwt", 1, 3, "Width:")
@@ -448,7 +517,7 @@ class Example(Frame):
             isoscale = scale * 1 # temporary fix for oversized iso view
             isopoints = Iso_View.iso_points()
             scaledisopoints = []
-
+            lengthdif = -30, 80
             movement = 0, 0
             for n in range(len(isopoints)):
                 r, zdepth = Iso_View.rotate_face(isopoints[n], movement)
@@ -467,48 +536,59 @@ class Example(Frame):
         var1 = IntVar()
         var1.set(1)
         checkbut = Checkbutton(self, text="Measurements", variable=var1, command=lambda: create(), onvalue=1, offvalue=0)
-        checkbut.grid(row=15, column=0, sticky=N)
+        checkbut.grid(row=17, column=0, sticky=N)
 
         dbtn = Button(self, text="Defaults", width=10, command=setdef)
-        dbtn.grid(row=14, column=5, sticky=E)
+        dbtn.grid(row=16, column=5, sticky=E)
         hbtn = Button(self, text="Random", width=10, command=randsettings)
-        hbtn.grid(row=15, column=5)
+        hbtn.grid(row=17, column=5)
         quit_button = Button(self, text="Quit", width=10, command=self.quit)
-        quit_button.grid(row=16, column=5)
+        quit_button.grid(row=18, column=5)
+
+
+        mlbl = Label(self, text="Model:", width=10, background="#aaa")
+        mlbl.grid(row=1, column=0, sticky=W+S)
+
+        modelcboxvar = 'cb1'
+        modelcbox = Combobox(self, width=10, textvariable=modelcboxvar, state="readonly")
+        modelcbox['values'] = ('Custom', 'LE-200-4', 'LE-200-9', 'LE-200-12', 'LE-200-18', 'LE-200-24', 'LE-200-40')
+        modelcbox.grid(row=2, column=0, sticky=N)
+        modelcbox.bind("<<ComboboxSelected>>", lambda _: setmodel())
 
         llbl = Label(self, text="Length:", width=10, background="#aaa")
-        llbl.grid(row=1, column=0, sticky=W+S)
+        llbl.grid(row=3, column=0, sticky=W+S)
         ltext = Text(self, width=10, height=1)
         ltext.insert(END, "Length")
-        ltext.grid(row=2, column=0)
+        ltext.grid(row=4, column=0)
         wbl = Label(self, text="Width:", width=10, background="#aaa")
-        wbl.grid(row=3, column=0, sticky=W+S)
+        wbl.grid(row=5, column=0, sticky=W+S)
         wtext = Text(self, width=10, height=1)
         wtext.insert(END, "Width")
-        wtext.grid(row=4, column=0)
+        wtext.grid(row=6, column=0)
         hlbl = Label(self, text="Height:", width=10, background="#aaa")
-        hlbl.grid(row=5, column=0, sticky=W+S)
+        hlbl.grid(row=7, column=0, sticky=W+S)
         htext = Text(self, width=10, height=1)
         htext.insert(END, "Height")
-        htext.grid(row=6, column=0)
+        htext.grid(row=8, column=0)
         stylelbl = Label(self, text="Draft Type:", width=10, background="#aaa")
-        stylelbl.grid(row=7, column=0, sticky=W + S)
-        stylecboxvar = 0
+        stylelbl.grid(row=9, column=0, sticky=W + S)
+
+        stylecboxvar = 'cb2'
         stylecbox = Combobox(self, width=10, textvariable=stylecboxvar, state="readonly")
         stylecbox['values'] = ('Updraft', 'Downdraft')
-        stylecbox.grid(row=8, column=0, sticky=N)
+        stylecbox.grid(row=10, column=0, sticky=N)
 
         cbtn = Button(self, text="Create", width=10, command=create_home)
-        cbtn.grid(row=11, column=5, sticky=N)
+        cbtn.grid(row=13, column=5, sticky=N)
         flbtn = Button(self, text="Flat", width=10, command=create_flat)
-        flbtn.grid(row=12, column=5, sticky=N)
+        flbtn.grid(row=14, column=5, sticky=N)
         fbtn = Button(self, text="Free View", width=10, command=create_free)
-        fbtn.grid(row=13, column=5, sticky=N)
+        fbtn.grid(row=15, column=5, sticky=N)
         statbtn = Button(self, text="Stats", width=10, command=create_stat)
-        statbtn.grid(row=10, column=5, sticky=N)
+        statbtn.grid(row=12, column=5, sticky=N)
 
         fakelbl = Label(self, text="    ", width=10, background="#aaa")
-        fakelbl.grid(row=9, column=0, sticky=W + S)
+        fakelbl.grid(row=11, column=0, sticky=W + S)
 
 
 def size_list():
