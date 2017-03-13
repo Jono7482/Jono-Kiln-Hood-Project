@@ -1,6 +1,7 @@
 import math
 import Gui
 import Iso_View
+import GetSize
 
 
 def get_middle(variable, index1, index2):
@@ -261,3 +262,31 @@ def loc_size_output_flat(points, face):
         locnsize = rightlength, rightheight, righttop, rightface, rightskirt, rightbend
 
     return locnsize
+
+def get_area():
+    # wt, lt, ht, top, skirt, draft
+    wt, lt, ht, top, skirt, draft = Gui.size_list()
+
+    fpoints = GetSize.create_points(wt, ht, draft, "Front")
+    spoints = GetSize.create_points(lt, ht, draft, "Side")
+
+    locnsize = loc_size_output(fpoints, spoints)
+    frontht = locnsize[8][2] + skirt
+    if draft == "Updraft":
+        backht = locnsize[8][2]
+    else:
+        backht = ht
+    sideht = locnsize[2][2] + skirt
+
+    frontarea = (wt * frontht) - ((frontht - skirt) * ((wt - top)/2))
+    backarea = (wt * backht) - ((backht - skirt) * ((wt - top)/2))
+    if draft == "Updraft":
+        sidearea = (lt * sideht) - ((sideht - skirt) * ((lt - top)/2))
+    else:
+        sidearea = (lt * sideht) - ((sideht - skirt) * ((lt - top)/2))
+    toparea = top * top
+    area = frontarea + backarea + (sidearea * 2) + toparea
+
+    return area
+
+

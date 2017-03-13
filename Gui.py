@@ -51,8 +51,8 @@ class Example(Frame):
         canvas = Canvas(self, background="#fff")
         canvas.grid(row=1, column=1, columnspan=4, rowspan=17, padx=4, sticky=N+W+E+S)
 
+    # free view mouse control
         start = []
-
         def mouseloc(event):
             # Mouse Location
             x = canvas.canvasx(event.x)
@@ -78,6 +78,11 @@ class Example(Frame):
         canvas.bind("<Button-1>", press)
         canvas.bind("<B1-Motion>", motion)
 
+    # change global values for model custom update
+        def setglobaldims(lv, wv, hv):
+            global lt, wt, ht
+            lt, wt, ht = lv, wv, hv
+
     # input testing amounts
         def setdef():
             ltext.delete("1.0", END)
@@ -91,17 +96,20 @@ class Example(Frame):
 
     # Make random size hoods
         def randsettings():
+            l = random.randint(50, 100)
+            w = random.randint(50, 100)
+            h = random.randint(20, 60)
             ltext.delete("1.0", END)
-            ltext.insert("1.0", random.randint(50, 100))
+            ltext.insert("1.0", l)
             wtext.delete("1.0", END)
-            wtext.insert("1.0", random.randint(50, 100))
+            wtext.insert("1.0", w)
             htext.delete("1.0", END)
-            htext.insert("1.0", random.randint(20, 60))
+            htext.insert("1.0", h)
             randdraft = "Downdraft", "Updraft"
             stylecbox.set(randdraft[random.randint(0, 1)])
             create()
 
-        # Make random size hoods
+    # store standard model dimensions for updraft and downdraft
         def modelsaves(index):
             ud4 = 45, 44, 24
             dd4 = 45, 52.5, 24
@@ -118,6 +126,7 @@ class Example(Frame):
             saves = ud4, dd4, ud9, dd9, ud12, dd12, ud18, dd18, ud24, dd24, ud40, dd40
             return saves[index]
 
+    # set model dimensions
         def setmodel():
             model = modelcbox.get()
             draft = stylecbox.get()
@@ -165,9 +174,10 @@ class Example(Frame):
             wtext.insert("1.0", dims[0])
             htext.delete("1.0", END)
             htext.insert("1.0", dims[2])
+            setglobaldims(dims[1], dims[0], dims[2])
             create()
 
-
+    # create / recreate canvas
         def create():
             global cview
             if cview is "Default":
@@ -194,20 +204,25 @@ class Example(Frame):
             top = 16
             skirt = 4
             try:
-                lt = float(ltext.get("1.0", 'end-1c'))
+                ltt = float(ltext.get("1.0", 'end-1c'))
             except ValueError:
                 print("Length must be a number! ")
                 isfloat = False
             try:
-                wt = float(wtext.get("1.0", 'end-1c'))
+                wtt = float(wtext.get("1.0", 'end-1c'))
             except ValueError:
                 print("Width must be a number!")
                 isfloat = False
             try:
-                ht = float(htext.get("1.0", 'end-1c'))
+                htt = float(htext.get("1.0", 'end-1c'))
             except ValueError:
                 print("Height must be a number!")
                 isfloat = False
+            if isfloat == True:
+                if (lt != ltt) or (wt != wtt) or (ht != htt):
+                    modelcbox.set('Custom')
+
+                wt, lt, ht = wtt, ltt, htt
             return wt, lt, ht, isfloat
 
     # Get points
@@ -271,6 +286,7 @@ class Example(Frame):
             global cview
             cview = "Stat"
             canvas.delete("all")
+            Iso_View.reset_movement()
             draw_stat_canvas()
 
         def draw_home_canvas():
@@ -382,8 +398,6 @@ class Example(Frame):
             canvas.create_polygon(shape, fill="#ccc", outline="black", width=2)
 
             if (draft != 'Downdraft') or (face != "Back"):
-                print("draft = ", draft, " Face = ", face)
-                print("not downdraft and not back")
                 canvas.create_line(points[1], points[4], width=1, dash=(10,10))
 
             canvas_id = canvas.create_text(canvaswidth/2, canvasheight)
@@ -393,7 +407,9 @@ class Example(Frame):
                 locnsize = Mesurements.loc_size_output_flat(points, face)
                 for each in locnsize:
                     if isinstance(each[2], str):
-                        each[2] = "Bend " + each[2] + "° Down"
+                        if (draft != 'Downdraft') or (face != "Back"):
+                            each[2] = "Bend " + each[2] + "° Down"
+                        else: each[2] = ""
                     else:
                         each[2] = round(each[2], 3)
                     canvas_id = canvas.create_text(each[0:2])
@@ -476,12 +492,45 @@ class Example(Frame):
                 varlabel = canvas.create_text(column, row)
                 canvas.itemconfig(varlabel, text=text, width=130, anchor=loc, font=("Courier", 9))
 
-            material = "Stainless"
-            guage = 16
-            area = 22000
-            weight = 100
-            pplb = "$1.00"
-            cost = "$200.00"
+            material = matcbox.get()
+            gauge = gaugecbox.get()
+            areasquare = Mesurements.get_area()
+            gaugethick = 0 #in inches
+            weightper = 0 # lb/ft²
+
+        # gauge and weight from http://www.custompartnet.com/sheet-metal-gauge
+            if material == "Stainless":
+                if gauge == "16":
+                    gaugethick = 0.0625
+                    weightper = 2.601
+                elif gauge == "14":
+                    gaugethick = 0.0781
+                    weightper = 3.250
+                else:
+                    print("Wrong Stainless gauge")
+            elif material == "Galvanized":
+                if gauge == "16":
+                    gaugethick = 0.0635
+                    weightper = 2.590
+                elif gauge == "14":
+                    gaugethick = 0.0785
+                    weightper = 3.202
+                else:
+                    print("Wrong Galvanized gauge")
+            else:
+                print("Wrong Material")
+            thickness = gaugethick
+
+            squareft = areasquare * 0.00694444
+            weight = weightper * squareft
+
+            ppsqin = pricetext.get("1.0", 'end-1c')
+            if ppsqin[0] != "$":
+                ppsqin = "$" + ppsqin
+                pricetext.delete("1.0", END)
+                pricetext.insert("1.0", ppsqin)
+            ppsqinint = float(ppsqin.lstrip("$"))
+            price = "$" + str(round(areasquare * ppsqinint))
 
             stat_text("lbmod", 1, 1, "Model:")
             stat_text("lbmod1", 2, 1, model)
@@ -495,16 +544,22 @@ class Example(Frame):
             stat_text("lbdraft1", 2, 5, draft)
             stat_text("lbmat", 1, 6, "Material:")
             stat_text("lbmat1", 2, 6, material)
-            stat_text("lbgua", 1, 7, "Guage:")
-            stat_text("lbgua1", 2, 7, guage)
-            stat_text("lbarea", 1, 8, "Area:")
-            stat_text("lbarea1", 2, 8, area)
-            stat_text("lbweight", 1, 9, "Weight:")
-            stat_text("lbweight", 2, 9, weight)
-            stat_text("lbpplb", 1, 10, "Price per Lb:")
-            stat_text("lbpplb1", 2, 10, pplb)
-            stat_text("lbcost", 1, 11, "Cost:")
-            stat_text("lbcost1", 2, 11, cost)
+            stat_text("lbgua", 1, 7, "Gauge:")
+            stat_text("lbgua1", 2, 7, gauge)
+            stat_text("lbthick", 1, 8, "Thickness:")
+            stat_text("lbgua1", 2, 8, thickness)
+            stat_text("lbarea", 1, 9, "Area:")
+            areastr = str(areasquare)
+            areastr2 = areastr[0:7] + " in²"
+            stat_text("lbarea1", 2, 9, areastr2)
+            stat_text("lbweight", 1, 10, "Weight:")
+            weightstr = str(int(weight))
+            weightstr2 = weightstr + " lbs."
+            stat_text("lbweight", 2, 10, weightstr2)
+            stat_text("lbpplb", 1, 11, "$ per in²:")
+            stat_text("lbpplb1", 2, 11, ppsqin)
+            stat_text("lbcost", 1, 12, "Price:")
+            stat_text("lbcost1", 2, 12, price)
 
             # iso View
             canvasheight = canvas.winfo_height()
@@ -517,7 +572,7 @@ class Example(Frame):
             isoscale = scale * 1 # temporary fix for oversized iso view
             isopoints = Iso_View.iso_points()
             scaledisopoints = []
-            lengthdif = -30, 80
+            lengthdif = -30, 70
             movement = 0, 0
             for n in range(len(isopoints)):
                 r, zdepth = Iso_View.rotate_face(isopoints[n], movement)
@@ -539,16 +594,15 @@ class Example(Frame):
         checkbut.grid(row=17, column=0, sticky=N)
 
         dbtn = Button(self, text="Defaults", width=10, command=setdef)
-        dbtn.grid(row=16, column=5, sticky=E)
+        dbtn.grid(row=11, column=0, sticky=S)
         hbtn = Button(self, text="Random", width=10, command=randsettings)
-        hbtn.grid(row=17, column=5)
+        hbtn.grid(row=12, column=0)
         quit_button = Button(self, text="Quit", width=10, command=self.quit)
         quit_button.grid(row=18, column=5)
 
 
         mlbl = Label(self, text="Model:", width=10, background="#aaa")
-        mlbl.grid(row=1, column=0, sticky=W+S)
-
+        mlbl.grid(row=1, column=0, sticky=S)
         modelcboxvar = 'cb1'
         modelcbox = Combobox(self, width=10, textvariable=modelcboxvar, state="readonly")
         modelcbox['values'] = ('Custom', 'LE-200-4', 'LE-200-9', 'LE-200-12', 'LE-200-18', 'LE-200-24', 'LE-200-40')
@@ -556,39 +610,62 @@ class Example(Frame):
         modelcbox.bind("<<ComboboxSelected>>", lambda _: setmodel())
 
         llbl = Label(self, text="Length:", width=10, background="#aaa")
-        llbl.grid(row=3, column=0, sticky=W+S)
+        llbl.grid(row=3, column=0, sticky=S)
         ltext = Text(self, width=10, height=1)
         ltext.insert(END, "Length")
         ltext.grid(row=4, column=0)
         wbl = Label(self, text="Width:", width=10, background="#aaa")
-        wbl.grid(row=5, column=0, sticky=W+S)
+        wbl.grid(row=5, column=0, sticky=S)
         wtext = Text(self, width=10, height=1)
         wtext.insert(END, "Width")
         wtext.grid(row=6, column=0)
         hlbl = Label(self, text="Height:", width=10, background="#aaa")
-        hlbl.grid(row=7, column=0, sticky=W+S)
+        hlbl.grid(row=7, column=0, sticky=S)
         htext = Text(self, width=10, height=1)
         htext.insert(END, "Height")
         htext.grid(row=8, column=0)
         stylelbl = Label(self, text="Draft Type:", width=10, background="#aaa")
-        stylelbl.grid(row=9, column=0, sticky=W + S)
+        stylelbl.grid(row=9, column=0, sticky=S)
+
+        matlbl = Label(self, text="Material:", width=13, background="#aaa")
+        matlbl.grid(row=1, column=5, sticky=S)
+        matcboxvar = 'cb3'
+        matcbox = Combobox(self, width=10, textvariable=matcboxvar, state="readonly")
+        matcbox['values'] = ('Stainless', 'Galvanized')
+        matcbox.grid(row=2, column=5, sticky=S)
+        matcbox.bind("<<ComboboxSelected>>", lambda _: create())
+        gaugelbl = Label(self, text="Gauge:", width=10, background="#aaa")
+        gaugelbl.grid(row=3, column=5, sticky=S)
+        gaugecboxvar = 'cb4'
+        gaugecbox = Combobox(self, width=10, textvariable=gaugecboxvar, state="readonly")
+        gaugecbox['values'] = ('14', '16')
+        gaugecbox.grid(row=4, column=5, sticky=S)
+        gaugecbox.bind("<<ComboboxSelected>>", lambda _: create())
+        pricelbl = Label(self, text="$ Per in²:", width=10, background="#aaa")
+        pricelbl.grid(row=5, column=5, sticky=S)
+        pricetext = Text(self, width=8, height=1)
+        pricetext.insert(END, "$0.42")
+        pricetext.grid(row=6, column=5)
 
         stylecboxvar = 'cb2'
         stylecbox = Combobox(self, width=10, textvariable=stylecboxvar, state="readonly")
         stylecbox['values'] = ('Updraft', 'Downdraft')
         stylecbox.grid(row=10, column=0, sticky=N)
+        stylecbox.bind("<<ComboboxSelected>>", lambda _: setmodel())
 
-        cbtn = Button(self, text="Create", width=10, command=create_home)
-        cbtn.grid(row=13, column=5, sticky=N)
+        vlbl = Label(self, text="View:", width=10, background="#aaa")
+        vlbl.grid(row=11, column=5, sticky=S)
+        cbtn = Button(self, text="Home", width=10, command=create_home)
+        cbtn.grid(row=12, column=5, sticky=N)
         flbtn = Button(self, text="Flat", width=10, command=create_flat)
-        flbtn.grid(row=14, column=5, sticky=N)
-        fbtn = Button(self, text="Free View", width=10, command=create_free)
-        fbtn.grid(row=15, column=5, sticky=N)
+        flbtn.grid(row=13, column=5, sticky=N)
+        fbtn = Button(self, text="Free 3D", width=10, command=create_free)
+        fbtn.grid(row=14, column=5, sticky=N)
         statbtn = Button(self, text="Stats", width=10, command=create_stat)
-        statbtn.grid(row=12, column=5, sticky=N)
+        statbtn.grid(row=15, column=5, sticky=N)
 
-        fakelbl = Label(self, text="    ", width=10, background="#aaa")
-        fakelbl.grid(row=11, column=0, sticky=W + S)
+        fakelbl = Label(self, text="", width=0, background="#aaa")
+        fakelbl.grid(row=15, column=0, sticky=N)
 
 
 def size_list():
