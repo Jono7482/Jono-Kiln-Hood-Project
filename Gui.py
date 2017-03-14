@@ -1,7 +1,6 @@
 import random
 from tkinter import *
 from tkinter.ttk import Combobox
-
 import GetSize
 import Mesurements
 import Iso_View
@@ -48,8 +47,9 @@ class Example(Frame):
 
 
         # canvas
-        canvas = Canvas(self, background="#fff")
+        canvas = Canvas(self, background="#eee")
         canvas.grid(row=1, column=1, columnspan=4, rowspan=17, padx=4, sticky=N+W+E+S)
+
 
     # free view mouse control
         start = []
@@ -325,7 +325,7 @@ class Example(Frame):
             canvas.create_line(topshape[1], topshape[5], width=2)
             canvas.create_line(topshape[2], topshape[6], width=2)
             canvas.create_line(topshape[3], topshape[7], width=2)
-            canvas.create_oval(holeshape, width=2, fill="#fff")
+            canvas.create_oval(holeshape, width=2, fill="#eee")
 
             # Iso View
             isoscale = scale * .75  # temporary fix for oversized iso view
@@ -474,6 +474,7 @@ class Example(Frame):
             model = modelcbox.get()
             if modelcbox.get() == '':
                 model = "Custom"
+
             wt, lt, ht, isfloat = get_user_inputs()
             if not isfloat:
                 return
@@ -494,35 +495,39 @@ class Example(Frame):
 
             material = matcbox.get()
             gauge = gaugecbox.get()
+            if gauge == "":
+                gauge = "Undefined"
             areasquare = Mesurements.get_area()
-            gaugethick = 0 #in inches
+            thickness = "Undefined"
             weightper = 0 # lb/ft²
 
         # gauge and weight from http://www.custompartnet.com/sheet-metal-gauge
             if material == "Stainless":
                 if gauge == "16":
-                    gaugethick = 0.0625
+                    thickness = 0.0625
                     weightper = 2.601
                 elif gauge == "14":
-                    gaugethick = 0.0781
+                    thickness = 0.0781
                     weightper = 3.250
                 else:
                     print("Wrong Stainless gauge")
             elif material == "Galvanized":
                 if gauge == "16":
-                    gaugethick = 0.0635
+                    thickness = 0.0635
                     weightper = 2.590
                 elif gauge == "14":
-                    gaugethick = 0.0785
+                    thickness = 0.0785
                     weightper = 3.202
                 else:
                     print("Wrong Galvanized gauge")
             else:
-                print("Wrong Material")
-            thickness = gaugethick
+                material = "Undefined"
 
             squareft = areasquare * 0.00694444
-            weight = weightper * squareft
+            if weightper == 0:
+                weight = "Undefined"
+            else:
+                weight = str(round(weightper * squareft)) + " lbs."
 
             ppsqin = pricetext.get("1.0", 'end-1c')
             if ppsqin[0] != "$":
@@ -530,7 +535,15 @@ class Example(Frame):
                 pricetext.delete("1.0", END)
                 pricetext.insert("1.0", ppsqin)
             ppsqinint = float(ppsqin.lstrip("$"))
-            price = "$" + str(round(areasquare * ppsqinint))
+            price = "$" + str(round(areasquare * ppsqinint, 2))
+
+            pplb = lbpricetext.get("1.0", 'end-1c')
+            if pplb[0] != "$":
+                pplb = "$" + pplb
+                lbpricetext.delete("1.0", END)
+                lbpricetext.insert("1.0", pplb)
+            pplbint = float(pplb.lstrip("$"))
+            lbprice = "$" + str(round((weightper * squareft) * pplbint, 2))
 
             stat_text("lbmod", 1, 1, "Model:")
             stat_text("lbmod1", 2, 1, model)
@@ -549,17 +562,19 @@ class Example(Frame):
             stat_text("lbthick", 1, 8, "Thickness:")
             stat_text("lbgua1", 2, 8, thickness)
             stat_text("lbarea", 1, 9, "Area:")
-            areastr = str(areasquare)
-            areastr2 = areastr[0:7] + " in²"
-            stat_text("lbarea1", 2, 9, areastr2)
+            areastr = str(round(areasquare, 2)) + " in²"
+            stat_text("lbarea1", 2, 9, areastr)
             stat_text("lbweight", 1, 10, "Weight:")
-            weightstr = str(int(weight))
-            weightstr2 = weightstr + " lbs."
-            stat_text("lbweight", 2, 10, weightstr2)
+            weightstr = weight
+            stat_text("lbweight", 2, 10, weightstr)
             stat_text("lbpplb", 1, 11, "$ per in²:")
             stat_text("lbpplb1", 2, 11, ppsqin)
-            stat_text("lbcost", 1, 12, "Price:")
-            stat_text("lbcost1", 2, 12, price)
+            stat_text("pplb", 1, 12, "$ per lb:")
+            stat_text("pplb1", 2, 12, pplb)
+            stat_text("lbcost", 1, 13, "in² Price:")
+            stat_text("lbcost1", 2, 13, price)
+            stat_text("lbcost", 1, 14, "lb. Price:")
+            stat_text("lbcost1", 2, 14, lbprice)
 
             # iso View
             canvasheight = canvas.winfo_height()
@@ -580,8 +595,6 @@ class Example(Frame):
                     canvaswidth, canvasheight, isoscale, r, "iso", offset, lengthdif)
                 scaledisopoints.append(shape)
                 canvas.create_polygon(shape, fill="#ccc", outline="black", width=2)
-
-
 
 
     # Frame objects
@@ -647,6 +660,12 @@ class Example(Frame):
         pricetext.insert(END, "$0.42")
         pricetext.grid(row=6, column=5)
 
+        lbpricelbl = Label(self, text="$ Per lb:", width=10, background="#aaa")
+        lbpricelbl.grid(row=7, column=5, sticky=S)
+        lbpricetext = Text(self, width=8, height=1)
+        lbpricetext.insert(END, "$23.35")
+        lbpricetext.grid(row=8, column=5)
+
         stylecboxvar = 'cb2'
         stylecbox = Combobox(self, width=10, textvariable=stylecboxvar, state="readonly")
         stylecbox['values'] = ('Updraft', 'Downdraft')
@@ -663,9 +682,11 @@ class Example(Frame):
         fbtn.grid(row=14, column=5, sticky=N)
         statbtn = Button(self, text="Stats", width=10, command=create_stat)
         statbtn.grid(row=15, column=5, sticky=N)
-
+        llbl = Label(self, text="Jono@OcJono.com 2017", width=40, background="#aaa")
+        llbl.grid(row=18, column=1, columnspan=4, sticky=S)
         fakelbl = Label(self, text="", width=0, background="#aaa")
         fakelbl.grid(row=15, column=0, sticky=N)
+
 
 
 def size_list():

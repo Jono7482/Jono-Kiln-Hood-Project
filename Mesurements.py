@@ -58,11 +58,13 @@ def home_measurements():
     shypdd = math.hypot(lt - top, ht - skirt)  # DD length of front face as seen from side
     if sizelist[5] == "Updraft":
         shyp = shypud
+        backheight = shyp
     else:
         shyp = shypdd
+        backheight = ht
     ffseem = line_length(isopoints[7][0], isopoints[7][1])  # iso seem between front and side
     bfseem = line_length(isopoints[2][0], isopoints[2][1])  # iso seem between back and side
-    measurementarray = [skirt, fhyp, top, wt, shyp, lt, ht, fbend, sbend, ffseem, bfseem]
+    measurementarray = [skirt, fhyp, top, wt, shyp, lt, ht, fbend, sbend, ffseem, bfseem, backheight]
     return measurementarray
 
 
@@ -158,7 +160,7 @@ def loc_size_output(front, side, top=None, iso=None):
     return locnsize  # format out [x, y, size]
 
 def loc_size_output_flat(points, face):
-    # sizearray format skirt, fhyp, top, wt, shyp, lt, ht, fbend, sbend, ffseem, bfseem
+    # sizearray format skirt, fhyp, top, wt, shyp, lt, ht, fbend, sbend, ffseem, bfseem, backheight
     sizearray = home_measurements()
 
     if face is "Front":
@@ -203,7 +205,7 @@ def loc_size_output_flat(points, face):
         backskirt[0] -= 12
         backheighttemp = get_middle(points, 2, 3), get_middle(points, 0, 5)
         backheight = get_middle(backheighttemp, 0, 1)
-        backheight.append(sizearray[1] + sizearray[0])
+        backheight.append(sizearray[11])
         backheight[0] += 1
         backbend = get_middle(points, 1, 4)
         backbend.append(str(sizearray[7]))
@@ -217,9 +219,10 @@ def loc_size_output_flat(points, face):
         leftlength = get_middle(points, 0, 5)
         leftlength.append(sizearray[5])
         leftlength[1] -= 9
-        leftheight = get_middle(points, 0, 2)
-        leftheight.append(sizearray[10] + sizearray[0])
-        leftheight[0] += 29
+        leftheighttemp = get_middle(points, 2, 3), get_middle(points, 0, 2)
+        leftheight = [leftheighttemp[0][0], leftheighttemp[1][1]]
+        leftheight.append(sizearray[1] + sizearray[0])
+        leftheight[0] += 0
         lefttop = get_middle(points, 2, 3)
         lefttop.append(sizearray[2])
         lefttop[1] += 9
@@ -242,9 +245,10 @@ def loc_size_output_flat(points, face):
         rightlength = get_middle(points, 0, 5)
         rightlength.append(sizearray[5])
         rightlength[1] -= 9
-        rightheight = get_middle(points, 0, 2)
-        rightheight.append(sizearray[10] + sizearray[0])
-        rightheight[0] -= 28
+        rightheighttemp = get_middle(points, 2, 3), get_middle(points, 0, 2)
+        rightheight = [rightheighttemp[0][0], rightheighttemp[1][1]]
+        rightheight.append(sizearray[1] + sizearray[0])
+        rightheight[0] -= 0
         righttop = get_middle(points, 2, 3)
         righttop.append(sizearray[2])
         righttop[1] += 9

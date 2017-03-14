@@ -26,7 +26,7 @@
     <SUITE FILE_PATH="coverage/Jono-Kiln-Hood-Project$Rotation_Testing.coverage" NAME="Rotation_Testing Coverage Results" MODIFIED="1485885015520" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Jono-Kiln-Hood-Project$moving_sphere.coverage" NAME="moving_sphere Coverage Results" MODIFIED="1485379497961" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Jono-Kiln-Hood-Project$Test_Rotation.coverage" NAME="Test_Rotation Coverage Results" MODIFIED="1485299403218" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Jono-Kiln-Hood-Project$Main.coverage" NAME="Main Coverage Results" MODIFIED="1489445436007" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Jono-Kiln-Hood-Project$Main.coverage" NAME="Main Coverage Results" MODIFIED="1489530983458" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -47,8 +47,8 @@
       <file leaf-file-name="Gui.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Gui.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="264">
-              <caret line="556" column="44" lean-forward="true" selection-start-line="556" selection-start-column="44" selection-end-line="556" selection-end-column="44" />
+            <state relative-caret-position="11033">
+              <caret line="678" column="65" lean-forward="false" selection-start-line="678" selection-start-column="65" selection-end-line="678" selection-end-column="65" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -59,7 +59,7 @@
       <file leaf-file-name="Iso_View.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Iso_View.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="214">
+            <state relative-caret-position="-98">
               <caret line="128" column="41" lean-forward="false" selection-start-line="128" selection-start-column="41" selection-end-line="128" selection-end-column="41" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
@@ -71,7 +71,7 @@
       <file leaf-file-name="GetSize.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GetSize.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="166">
+            <state relative-caret-position="-758">
               <caret line="128" column="40" lean-forward="false" selection-start-line="128" selection-start-column="40" selection-end-line="128" selection-end-column="40" />
               <folding />
             </state>
@@ -81,8 +81,8 @@
       <file leaf-file-name="Mesurements.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Mesurements.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-4576">
-              <caret line="62" column="19" lean-forward="true" selection-start-line="62" selection-start-column="19" selection-end-line="62" selection-end-column="19" />
+            <state relative-caret-position="4702">
+              <caret line="255" column="38" lean-forward="false" selection-start-line="255" selection-start-column="38" selection-end-line="255" selection-end-column="38" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -569,7 +569,14 @@
       <option name="project" value="LOCAL" />
       <updated>1489274966816</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="About done time to double check stats ect...">
+      <created>1489445525869</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1489445525869</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -616,7 +623,8 @@
     <MESSAGE value="Flat view done?" />
     <MESSAGE value="Good start on stat view" />
     <MESSAGE value="Setting up saved models" />
-    <option name="LAST_COMMIT_MESSAGE" value="Setting up saved models" />
+    <MESSAGE value="About done time to double check stats ect..." />
+    <option name="LAST_COMMIT_MESSAGE" value="About done time to double check stats ect..." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -829,7 +837,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Iso_View.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="214">
+        <state relative-caret-position="-98">
           <caret line="128" column="41" lean-forward="false" selection-start-line="128" selection-start-column="41" selection-end-line="128" selection-end-column="41" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
@@ -839,7 +847,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/GetSize.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="166">
+        <state relative-caret-position="-758">
           <caret line="128" column="40" lean-forward="false" selection-start-line="128" selection-start-column="40" selection-end-line="128" selection-end-column="40" />
           <folding />
         </state>
@@ -847,8 +855,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Mesurements.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-4576">
-          <caret line="62" column="19" lean-forward="true" selection-start-line="62" selection-start-column="19" selection-end-line="62" selection-end-column="19" />
+        <state relative-caret-position="4702">
+          <caret line="255" column="38" lean-forward="false" selection-start-line="255" selection-start-column="38" selection-end-line="255" selection-end-column="38" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
@@ -857,8 +865,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Gui.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="556" column="44" lean-forward="true" selection-start-line="556" selection-start-column="44" selection-end-line="556" selection-end-column="44" />
+        <state relative-caret-position="11033">
+          <caret line="678" column="65" lean-forward="false" selection-start-line="678" selection-start-column="65" selection-end-line="678" selection-end-column="65" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
