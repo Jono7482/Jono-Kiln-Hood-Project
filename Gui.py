@@ -132,6 +132,7 @@ class Example(Frame):
             draft = stylecbox.get()
 
             if model == 'Custom' or model == '':
+                create()
                 return
 
             if draft == "Updraft" or draft == "":
@@ -176,6 +177,7 @@ class Example(Frame):
             htext.insert("1.0", dims[2])
             setglobaldims(dims[1], dims[0], dims[2])
             create()
+            return
 
     # create / recreate canvas
         def create():
@@ -470,14 +472,13 @@ class Example(Frame):
             global wt
             global lt
             global ht
+            wt, lt, ht, isfloat = get_user_inputs()
+            if not isfloat:
+                return
             draft = stylecbox.get()
             model = modelcbox.get()
             if modelcbox.get() == '':
                 model = "Custom"
-
-            wt, lt, ht, isfloat = get_user_inputs()
-            if not isfloat:
-                return
 
             def stat_text(varlabel, column, row, text):
                 rowspace = 20
@@ -567,14 +568,30 @@ class Example(Frame):
             stat_text("lbweight", 1, 10, "Weight:")
             weightstr = weight
             stat_text("lbweight", 2, 10, weightstr)
-            stat_text("lbpplb", 1, 11, "$ per in²:")
-            stat_text("lbpplb1", 2, 11, ppsqin)
-            stat_text("pplb", 1, 12, "$ per lb:")
-            stat_text("pplb1", 2, 12, pplb)
-            stat_text("lbcost", 1, 13, "in² Price:")
-            stat_text("lbcost1", 2, 13, price)
-            stat_text("lbcost", 1, 14, "lb. Price:")
-            stat_text("lbcost1", 2, 14, lbprice)
+
+            pricetype = typecbox.get()
+            if pricetype == "lb":
+                stat_text("pplb", 1, 11, "$ per lb:")
+                stat_text("pplb1", 2, 11, pplb)
+                stat_text("lbcost", 1, 12, "lb. Price:")
+                stat_text("lbcost1", 2, 12, lbprice)
+
+            else:
+                stat_text("lbpplb", 1, 11, "$ per in²:")
+                stat_text("lbpplb1", 2, 11, ppsqin)
+                stat_text("lbcost", 1, 12, "in² Price:")
+                stat_text("lbcost1", 2, 12, price)
+
+            if pricetype == "in²" or pricetype == "":
+                lbpricelbl.grid_forget()
+                lbpricetext.grid_forget()
+                pricelbl.grid(row=7, column=5, sticky=S)
+                pricetext.grid(row=8, column=5)
+            else:
+                pricelbl.grid_forget()
+                pricetext.grid_forget()
+                lbpricelbl.grid(row=7, column=5, sticky=S)
+                lbpricetext.grid(row=8, column=5)
 
             # iso View
             canvasheight = canvas.winfo_height()
@@ -621,6 +638,8 @@ class Example(Frame):
         modelcbox['values'] = ('Custom', 'LE-200-4', 'LE-200-9', 'LE-200-12', 'LE-200-18', 'LE-200-24', 'LE-200-40')
         modelcbox.grid(row=2, column=0, sticky=N)
         modelcbox.bind("<<ComboboxSelected>>", lambda _: setmodel())
+        if modelcbox.get() == "":
+            modelcbox.set('Custom')
 
         llbl = Label(self, text="Length:", width=10, background="#aaa")
         llbl.grid(row=3, column=0, sticky=S)
@@ -647,6 +666,8 @@ class Example(Frame):
         matcbox['values'] = ('Stainless', 'Galvanized')
         matcbox.grid(row=2, column=5, sticky=S)
         matcbox.bind("<<ComboboxSelected>>", lambda _: create())
+        if matcbox.get() == "":
+            matcbox.set('Galvanized')
         gaugelbl = Label(self, text="Gauge:", width=10, background="#aaa")
         gaugelbl.grid(row=3, column=5, sticky=S)
         gaugecboxvar = 'cb4'
@@ -654,11 +675,18 @@ class Example(Frame):
         gaugecbox['values'] = ('14', '16')
         gaugecbox.grid(row=4, column=5, sticky=S)
         gaugecbox.bind("<<ComboboxSelected>>", lambda _: create())
-        pricelbl = Label(self, text="$ Per in²:", width=10, background="#aaa")
-        pricelbl.grid(row=5, column=5, sticky=S)
-        pricetext = Text(self, width=8, height=1)
-        pricetext.insert(END, "$0.42")
-        pricetext.grid(row=6, column=5)
+        if gaugecbox.get() == "":
+            gaugecbox.set("14")
+
+        typelbl = Label(self, text="$ Per:", width=10, background="#aaa")
+        typelbl.grid(row=5, column=5, sticky=S)
+        typecboxvar = 'cb5'
+        typecbox = Combobox(self, width=10, textvariable=typecboxvar, state="readonly")
+        typecbox['values'] = ('in²', 'lb')
+        typecbox.grid(row=6, column=5, sticky=S)
+        typecbox.bind("<<ComboboxSelected>>", lambda _: create())
+        if typecbox.get() == "":
+            typecbox.set('in²')
 
         lbpricelbl = Label(self, text="$ Per lb:", width=10, background="#aaa")
         lbpricelbl.grid(row=7, column=5, sticky=S)
@@ -666,11 +694,19 @@ class Example(Frame):
         lbpricetext.insert(END, "$23.35")
         lbpricetext.grid(row=8, column=5)
 
+        pricelbl = Label(self, text="$ Per in²:", width=10, background="#aaa")
+        pricelbl.grid(row=7, column=5, sticky=S)
+        pricetext = Text(self, width=8, height=1)
+        pricetext.insert(END, "$0.42")
+        pricetext.grid(row=8, column=5)
+
         stylecboxvar = 'cb2'
         stylecbox = Combobox(self, width=10, textvariable=stylecboxvar, state="readonly")
         stylecbox['values'] = ('Updraft', 'Downdraft')
         stylecbox.grid(row=10, column=0, sticky=N)
         stylecbox.bind("<<ComboboxSelected>>", lambda _: setmodel())
+        if stylecbox.get() == "":
+            stylecbox.set('Updraft')
 
         vlbl = Label(self, text="View:", width=10, background="#aaa")
         vlbl.grid(row=11, column=5, sticky=S)
