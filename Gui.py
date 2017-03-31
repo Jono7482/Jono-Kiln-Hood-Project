@@ -510,6 +510,9 @@ class Example(Frame):
                 elif gauge == "14":
                     thickness = 0.0781
                     weightper = 3.250
+                elif gauge == "17":
+                    thickness = 0.0562
+                    weightper = 2.339
                 else:
                     print("Wrong Stainless gauge")
             elif material == "Galvanized":
@@ -519,6 +522,9 @@ class Example(Frame):
                 elif gauge == "14":
                     thickness = 0.0785
                     weightper = 3.202
+                elif gauge == "17":
+                    thickness = 0.0575
+                    weightper = 2.346
                 else:
                     print("Wrong Galvanized gauge")
             else:
@@ -672,7 +678,7 @@ class Example(Frame):
         gaugelbl.grid(row=3, column=5, sticky=S)
         gaugecboxvar = 'cb4'
         gaugecbox = Combobox(self, width=10, textvariable=gaugecboxvar, state="readonly")
-        gaugecbox['values'] = ('14', '16')
+        gaugecbox['values'] = ('14', '16', '17')
         gaugecbox.grid(row=4, column=5, sticky=S)
         gaugecbox.bind("<<ComboboxSelected>>", lambda _: create())
         if gaugecbox.get() == "":
